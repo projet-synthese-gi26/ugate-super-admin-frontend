@@ -24,6 +24,7 @@ jobs:
       NEXT_PUBLIC_API_BASE_URL: https://traefikdev.yowyob.com/ugate
       NEXT_PUBLIC_VEHICLE_API_BASE_URL: https://traefikdev.yowyob.com/vehicule
       NEXT_PUBLIC_COMPLIANCE_URL: https://ugate-dev.yowyob.com/compliance
+      NEXT_PUBLIC_OSM_BASE_URL: https://traefikdev.yowyob.com/organization
       NEXT_PUBLIC_API_AUTH_URL: https://traefikdev.yowyob.com/auth
       NEXT_PUBLIC_API_UGATE_URL: https://traefikdev.yowyob.com/ugate
       NEXT_PUBLIC_APP_URL: https://ugate-dev.yowyob.com/
