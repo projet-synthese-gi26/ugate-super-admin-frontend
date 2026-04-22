@@ -1,18 +1,13 @@
 /**
  * 🔧 SERVICE : SuperAdmin API
- * 
- * Ce service gère toutes les interactions avec l'API UGate pour le Super Admin
- * - Analytics : Statistiques globales de la plateforme
- * - Management : Gestion des syndicats (approuver, désactiver, etc.)
  */
 
-const API_BASE_URL = 'https://ugate.pynfi.com';
+// Utilisation des variables d'environnement
+const API_BASE_URL = process.env.NEXT_PUBLIC_UGATE_API_URL || 'https://traefikdev.yowyob.com/ugate';
+const AUTH_API_URL = process.env.NEXT_PUBLIC_AUTH_API_URL || 'https://traefikdev.yowyob.com/auth';
 
-// Mode développement : utiliser des données mockées
-// IMPORTANT : Désactivé pour tester avec les vraies données
 const USE_MOCK_DATA = false;
 
-// Types pour les mises à jour de profil
 export interface UpdateProfileRequest {
   firstName: string;
   lastName: string;
@@ -32,7 +27,6 @@ export interface LogActivityRequest {
   details?: Record<string, unknown>;
 }
 
-// Types pour les réponses API
 export interface StatsResponse {
   totalSyndicats: number;
   activeSyndicats: number;
@@ -42,7 +36,6 @@ export interface StatsResponse {
   totalRevenue: number;
 }
 
-// Données mockées pour le développement
 const MOCK_STATS: StatsResponse = {
   totalSyndicats: 248,
   activeSyndicats: 186,
@@ -53,66 +46,7 @@ const MOCK_STATS: StatsResponse = {
 };
 
 const MOCK_SYNDICATES: SyndicateResponse[] = [
-  {
-    id: '1',
-    name: 'Syndicat des Enseignants',
-    description: 'Syndicat regroupant les enseignants du secondaire',
-    domain: 'Éducation',
-    isApproved: false,
-    isActive: true,
-    logoUrl: '',
-    statusUrl: '',
-    creatorId: 'user-1',
-    createdAt: '2024-01-15T10:00:00Z',
-  },
-  {
-    id: '2',
-    name: 'Syndicat des Médecins',
-    description: 'Syndicat des professionnels de santé',
-    domain: 'Santé',
-    isApproved: true,
-    isActive: true,
-    logoUrl: '',
-    statusUrl: '',
-    creatorId: 'user-2',
-    createdAt: '2023-06-10T10:00:00Z',
-  },
-  {
-    id: '3',
-    name: 'Syndicat des Infirmiers',
-    description: 'Syndicat du personnel infirmier',
-    domain: 'Santé',
-    isApproved: true,
-    isActive: false,
-    logoUrl: '',
-    statusUrl: '',
-    creatorId: 'user-3',
-    createdAt: '2023-09-20T10:00:00Z',
-  },
-  {
-    id: '4',
-    name: 'Syndicat des Chauffeurs',
-    description: 'Syndicat des chauffeurs de taxi',
-    domain: 'Transport',
-    isApproved: true,
-    isActive: true,
-    logoUrl: '',
-    statusUrl: '',
-    creatorId: 'user-4',
-    createdAt: '2024-02-01T10:00:00Z',
-  },
-  {
-    id: '5',
-    name: 'Syndicat des Commerçants',
-    description: 'Syndicat des commerçants du marché central',
-    domain: 'Commerce',
-    isApproved: false,
-    isActive: true,
-    logoUrl: '',
-    statusUrl: '',
-    creatorId: 'user-5',
-    createdAt: '2024-03-15T10:00:00Z',
-  },
+  { id: '1', name: 'Syndicat des Enseignants', description: 'Desc', domain: 'Éducation', isApproved: false, isActive: true, logoUrl: '', statusUrl: '', creatorId: 'user-1', createdAt: '2024-01-15T10:00:00Z' }
 ];
 
 export interface SyndicateResponse {
@@ -126,7 +60,6 @@ export interface SyndicateResponse {
   creatorId: string;
   createdAt: string;
   isActive: boolean;
-  // Champs optionnels qui peuvent être présents
   type?: string;
   memberCount?: number;
   organizationId?: string;
@@ -146,18 +79,10 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-/**
- * 📊 ANALYTICS : Obtenir les KPIs globaux
- */
 export const getDashboardStats = async (): Promise<StatsResponse> => {
-  // Mode développement : retourner les données mockées
   if (USE_MOCK_DATA) {
-    console.log('🔧 Mode développement : Utilisation des données mockées');
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(MOCK_STATS), 500);
-    });
+    return new Promise((resolve) => setTimeout(() => resolve(MOCK_STATS), 500));
   }
-
   try {
     const token = localStorage.getItem('ugate_access_token');
     const response = await fetch(`${API_BASE_URL}/super-admin/analytics/dashboard`, {
@@ -167,11 +92,7 @@ export const getDashboardStats = async (): Promise<StatsResponse> => {
         'Authorization': `Bearer ${token || ''}`,
       },
     });
-
-    if (!response.ok) {
-      throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-    }
-
+    if (!response.ok) throw new Error(`Erreur ${response.status}: ${response.statusText}`);
     return await response.json();
   } catch (error) {
     console.error('❌ Erreur lors de la récupération des stats:', error);
@@ -179,9 +100,6 @@ export const getDashboardStats = async (): Promise<StatsResponse> => {
   }
 };
 
-/**
- * 📊 MANAGEMENT : Obtenir les statistiques globales
- */
 export const getGlobalStats = async (): Promise<StatsResponse> => {
   try {
     const token = localStorage.getItem('ugate_access_token');
@@ -192,11 +110,7 @@ export const getGlobalStats = async (): Promise<StatsResponse> => {
         'Authorization': `Bearer ${token || ''}`,
       },
     });
-
-    if (!response.ok) {
-      throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-    }
-
+    if (!response.ok) throw new Error(`Erreur ${response.status}: ${response.statusText}`);
     return await response.json();
   } catch (error) {
     console.error('❌ Erreur lors de la récupération des stats globales:', error);
@@ -204,104 +118,48 @@ export const getGlobalStats = async (): Promise<StatsResponse> => {
   }
 };
 
-/**
- * 📋 SYNDICATS : Lister tous les syndicats avec pagination
- */
-export const getAllSyndicates = async (
-  page: number = 0,
-  size: number = 10
-): Promise<PaginatedResponse<SyndicateResponse>> => {
-  // Mode développement : retourner les données mockées
+export const getAllSyndicates = async (page: number = 0, size: number = 10): Promise<PaginatedResponse<SyndicateResponse>> => {
   if (USE_MOCK_DATA) {
-    console.log('🔧 Mode développement : Utilisation des données mockées');
     const start = page * size;
     const end = start + size;
     const paginatedData = MOCK_SYNDICATES.slice(start, end);
-    
-    return new Promise((resolve) => {
-      setTimeout(() => resolve({
-        content: paginatedData,
-        page,
-        size,
-        totalElements: MOCK_SYNDICATES.length,
-        totalPages: Math.ceil(MOCK_SYNDICATES.length / size),
-      }), 500);
-    });
+    return new Promise((resolve) => setTimeout(() => resolve({
+      content: paginatedData, page, size, totalElements: MOCK_SYNDICATES.length, totalPages: Math.ceil(MOCK_SYNDICATES.length / size),
+    }), 500));
   }
-
   try {
     const token = localStorage.getItem('ugate_access_token');
-    console.log('🔑 Token récupéré:', token ? `${token.substring(0, 20)}...` : 'AUCUN TOKEN');
-    console.log('📡 Appel API:', `${API_BASE_URL}/syndicates?page=${page}&size=${size}`);
-    
-    const response = await fetch(
-      `${API_BASE_URL}/syndicates?page=${page}&size=${size}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token || ''}`,
-        },
-      }
-    );
-
-    console.log('📊 Réponse API:', response.status, response.statusText);
-
+    const response = await fetch(`${API_BASE_URL}/syndicates?page=${page}&size=${size}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token || ''}`,
+      },
+    });
     if (!response.ok) {
       let errorText = '';
-      try {
-        errorText = await response.text();
-      } catch (e) {
-        errorText = 'Impossible de lire la réponse d\'erreur';
-      }
-      console.error('❌ Erreur API:', errorText);
+      try { errorText = await response.text(); } catch (e) { errorText = 'Impossible'; }
       throw new Error(`Erreur ${response.status}: ${response.statusText || 'Erreur inconnue'} - ${errorText}`);
     }
-
-    const data = await response.json();
-    console.log('✅ Données reçues:', data);
-    return data;
+    return await response.json();
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
-    console.error('❌ Erreur lors de la récupération des syndicats:', errorMessage);
-    
-    // Si l'erreur est une erreur réseau, retourner des données mockées en fallback
     if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
-      console.warn('⚠️ Erreur réseau détectée, utilisation des données mockées en fallback');
       const start = page * size;
       const end = start + size;
       const paginatedData = MOCK_SYNDICATES.slice(start, end);
-      
-      return {
-        content: paginatedData,
-        page,
-        size,
-        totalElements: MOCK_SYNDICATES.length,
-        totalPages: Math.ceil(MOCK_SYNDICATES.length / size),
-      };
+      return { content: paginatedData, page, size, totalElements: MOCK_SYNDICATES.length, totalPages: Math.ceil(MOCK_SYNDICATES.length / size) };
     }
-    
     throw error;
   }
 };
 
-/**
- * ✅ APPROUVER : Approuver un syndicat
- */
 export const approveSyndicate = async (id: string): Promise<SyndicateResponse> => {
-  // Mode développement : simuler l'action
   if (USE_MOCK_DATA) {
-    console.log('🔧 Mode développement : Simulation de l\'approbation du syndicat', id);
     const syndicat = MOCK_SYNDICATES.find(s => s.id === id);
-    if (syndicat) {
-      syndicat.isApproved = true;
-      return new Promise((resolve) => {
-        setTimeout(() => resolve(syndicat), 300);
-      });
-    }
+    if (syndicat) { syndicat.isApproved = true; return new Promise((resolve) => setTimeout(() => resolve(syndicat), 300)); }
     throw new Error('Syndicat non trouvé');
   }
-
   try {
     const token = localStorage.getItem('ugate_access_token');
     const response = await fetch(`${API_BASE_URL}/super-admin/syndicates/${id}/approve`, {
@@ -311,11 +169,7 @@ export const approveSyndicate = async (id: string): Promise<SyndicateResponse> =
         'Authorization': `Bearer ${token || ''}`,
       },
     });
-
-    if (!response.ok) {
-      throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-    }
-
+    if (!response.ok) throw new Error(`Erreur ${response.status}: ${response.statusText}`);
     return await response.json();
   } catch (error) {
     console.error('❌ Erreur lors de l\'approbation du syndicat:', error);
@@ -323,20 +177,12 @@ export const approveSyndicate = async (id: string): Promise<SyndicateResponse> =
   }
 };
 
-/**
- * ❌ DÉSAPPROUVER : Désapprouver un syndicat
- */
 export const disapproveSyndicate = async (id: string): Promise<SyndicateResponse> => {
   if (USE_MOCK_DATA) {
-    console.log('🔧 Mode développement : Simulation de la désapprobation du syndicat', id);
     const syndicat = MOCK_SYNDICATES.find(s => s.id === id);
-    if (syndicat) {
-      syndicat.isApproved = false;
-      return new Promise((resolve) => setTimeout(() => resolve(syndicat), 300));
-    }
+    if (syndicat) { syndicat.isApproved = false; return new Promise((resolve) => setTimeout(() => resolve(syndicat), 300)); }
     throw new Error('Syndicat non trouvé');
   }
-
   try {
     const token = localStorage.getItem('ugate_access_token');
     const response = await fetch(`${API_BASE_URL}/super-admin/syndicates/${id}/disapprove`, {
@@ -346,11 +192,7 @@ export const disapproveSyndicate = async (id: string): Promise<SyndicateResponse
         'Authorization': `Bearer ${token || ''}`,
       },
     });
-
-    if (!response.ok) {
-      throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-    }
-
+    if (!response.ok) throw new Error(`Erreur ${response.status}: ${response.statusText}`);
     return await response.json();
   } catch (error) {
     console.error('❌ Erreur lors de la désapprobation du syndicat:', error);
@@ -358,20 +200,12 @@ export const disapproveSyndicate = async (id: string): Promise<SyndicateResponse
   }
 };
 
-/**
- * 🟢 ACTIVER : Activer un syndicat
- */
 export const activateSyndicate = async (id: string): Promise<SyndicateResponse> => {
   if (USE_MOCK_DATA) {
-    console.log('🔧 Mode développement : Simulation de l\'activation du syndicat', id);
     const syndicat = MOCK_SYNDICATES.find(s => s.id === id);
-    if (syndicat) {
-      syndicat.isActive = true;
-      return new Promise((resolve) => setTimeout(() => resolve(syndicat), 300));
-    }
+    if (syndicat) { syndicat.isActive = true; return new Promise((resolve) => setTimeout(() => resolve(syndicat), 300)); }
     throw new Error('Syndicat non trouvé');
   }
-
   try {
     const token = localStorage.getItem('ugate_access_token');
     const response = await fetch(`${API_BASE_URL}/super-admin/syndicates/${id}/activate`, {
@@ -381,11 +215,7 @@ export const activateSyndicate = async (id: string): Promise<SyndicateResponse> 
         'Authorization': `Bearer ${token || ''}`,
       },
     });
-
-    if (!response.ok) {
-      throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-    }
-
+    if (!response.ok) throw new Error(`Erreur ${response.status}: ${response.statusText}`);
     return await response.json();
   } catch (error) {
     console.error('❌ Erreur lors de l\'activation du syndicat:', error);
@@ -393,20 +223,12 @@ export const activateSyndicate = async (id: string): Promise<SyndicateResponse> 
   }
 };
 
-/**
- * 🔴 DÉSACTIVER : Désactiver un syndicat
- */
 export const deactivateSyndicate = async (id: string): Promise<SyndicateResponse> => {
   if (USE_MOCK_DATA) {
-    console.log('🔧 Mode développement : Simulation de la désactivation du syndicat', id);
     const syndicat = MOCK_SYNDICATES.find(s => s.id === id);
-    if (syndicat) {
-      syndicat.isActive = false;
-      return new Promise((resolve) => setTimeout(() => resolve(syndicat), 300));
-    }
+    if (syndicat) { syndicat.isActive = false; return new Promise((resolve) => setTimeout(() => resolve(syndicat), 300)); }
     throw new Error('Syndicat non trouvé');
   }
-
   try {
     const token = localStorage.getItem('ugate_access_token');
     const response = await fetch(`${API_BASE_URL}/super-admin/syndicates/${id}/deactivate`, {
@@ -416,11 +238,7 @@ export const deactivateSyndicate = async (id: string): Promise<SyndicateResponse
         'Authorization': `Bearer ${token || ''}`,
       },
     });
-
-    if (!response.ok) {
-      throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-    }
-
+    if (!response.ok) throw new Error(`Erreur ${response.status}: ${response.statusText}`);
     return await response.json();
   } catch (error) {
     console.error('❌ Erreur lors de la désactivation du syndicat:', error);
@@ -428,28 +246,15 @@ export const deactivateSyndicate = async (id: string): Promise<SyndicateResponse
   }
 };
 
-/**
- * 👤 PROFIL : Mettre à jour le profil utilisateur
- * Utilise l'endpoint POST /syndicates/user
- */
 export const updateProfile = async (data: UpdateProfileRequest): Promise<void> => {
-  if (USE_MOCK_DATA) {
-    console.log('🔧 Mode développement : Simulation de la mise à jour du profil', data);
-    return new Promise((resolve) => setTimeout(() => resolve(), 300));
-  }
-
+  if (USE_MOCK_DATA) return new Promise((resolve) => setTimeout(() => resolve(), 300));
   try {
     const token = localStorage.getItem('ugate_access_token');
-    
-    // Mapper les champs vers le format attendu par l'API
     const requestBody = {
       firstName: data.firstName,
       lastName: data.lastName,
       phoneNumber: data.phone || '',
-      // Les autres champs peuvent être ajoutés si nécessaire
-      // nationality, gender, language, birthDate, image
     };
-    
     const response = await fetch(`${API_BASE_URL}/syndicates/user`, {
       method: 'POST',
       headers: {
@@ -458,37 +263,22 @@ export const updateProfile = async (data: UpdateProfileRequest): Promise<void> =
       },
       body: JSON.stringify(requestBody),
     });
-
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('❌ Erreur API:', errorText);
       throw new Error(`Erreur ${response.status}: ${response.statusText}`);
     }
-
-    console.log('✅ Profil mis à jour avec succès');
   } catch (error) {
     console.error('❌ Erreur lors de la mise à jour du profil:', error);
     throw error;
   }
 };
 
-/**
- * 🔒 SÉCURITÉ : Changer le mot de passe
- * NOTE: Cet endpoint doit probablement être sur l'API Auth (https://auth-service.pynfi.com)
- * À vérifier avec l'équipe backend pour l'endpoint exact
- */
 export const changePassword = async (data: ChangePasswordRequest): Promise<void> => {
-  if (USE_MOCK_DATA) {
-    console.log('🔧 Mode développement : Simulation du changement de mot de passe');
-    return new Promise((resolve) => setTimeout(() => resolve(), 300));
-  }
-
+  if (USE_MOCK_DATA) return new Promise((resolve) => setTimeout(() => resolve(), 300));
   try {
     const token = localStorage.getItem('ugate_access_token');
-    
-    // TODO: Vérifier l'endpoint exact avec l'équipe backend
-    // Possiblement sur https://auth-service.pynfi.com/api/auth/change-password
-    const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
+    // Changement effectué ici pour utiliser AUTH_API_URL
+    const response = await fetch(`${AUTH_API_URL}/change-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -496,29 +286,17 @@ export const changePassword = async (data: ChangePasswordRequest): Promise<void>
       },
       body: JSON.stringify(data),
     });
-
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('❌ Erreur API:', errorText);
       throw new Error(`Erreur ${response.status}: ${response.statusText}`);
     }
-
-    console.log('✅ Mot de passe modifié avec succès');
   } catch (error) {
     console.error('❌ Erreur lors du changement de mot de passe:', error);
     throw error;
   }
 };
 
-/**
- * 📝 LOGS : Enregistrer une activité
- * NOTE: Cet endpoint n'existe pas encore dans l'API UGate
- * Les logs sont actuellement simulés côté frontend uniquement
- * À implémenter côté backend si nécessaire
- */
 export const logActivity = async (data: LogActivityRequest): Promise<void> => {
-  // Pour l'instant, on log uniquement en console
-  // L'endpoint backend n'existe pas encore dans la documentation Swagger
   console.log('📝 Log d\'activité (frontend only):', {
     action: data.action,
     entityType: data.entityType,
@@ -526,38 +304,4 @@ export const logActivity = async (data: LogActivityRequest): Promise<void> => {
     timestamp: new Date().toISOString(),
     details: data.details,
   });
-  
-  // Si l'endpoint est créé plus tard, décommenter ce code:
-  /*
-  try {
-    const token = localStorage.getItem('ugate_access_token');
-    const userId = localStorage.getItem('ugate_user_id') || 'unknown';
-    
-    const logData = {
-      userId,
-      action: data.action,
-      entityType: data.entityType,
-      entityId: data.entityId,
-      timestamp: new Date().toISOString(),
-      ipAddress: 'client-ip',
-      userAgent: navigator.userAgent,
-      details: data.details || {},
-    };
-
-    const response = await fetch(`${API_BASE_URL}/super-admin/activity-logs`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token || ''}`,
-      },
-      body: JSON.stringify(logData),
-    });
-
-    if (!response.ok) {
-      console.warn('⚠️ Erreur lors de l\'enregistrement du log d\'activité');
-    }
-  } catch (error) {
-    console.warn('⚠️ Erreur lors de l\'enregistrement du log:', error);
-  }
-  */
 };
