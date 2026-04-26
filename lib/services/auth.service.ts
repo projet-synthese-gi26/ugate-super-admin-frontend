@@ -35,7 +35,7 @@ export const login = async (credentials: LoginCredentials): Promise<LoginRespons
     console.log('🔄 Tentative de connexion pour:', credentials.identifier);
 
     // Appel à l'API de login
-    const response = await fetch(`${AUTH_API_URL}/auth/login`, {
+    const response = await fetch(`${AUTH_API_URL}/api/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ export const refreshAccessToken = async (): Promise<RefreshTokenResponse> => {
 
     if (!refreshToken) throw new Error('Aucun refresh token disponible');
 
-    const response = await fetch(`${AUTH_API_URL}/auth/refresh`, {
+    const response = await fetch(`${AUTH_API_URL}/api/auth/refresh`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
