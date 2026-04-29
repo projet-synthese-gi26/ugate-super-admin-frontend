@@ -21,6 +21,8 @@ export interface SyndicateResponse {
   isActive: boolean;
   createdAt: string;
   logoUrl?: string;
+  statusUrl?: string;
+  charteUrl?: string;
 }
 
 export interface PaginatedResponse<T> {
