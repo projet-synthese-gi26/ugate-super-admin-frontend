@@ -1,459 +1,99 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  DollarSign, 
-  Search, 
-  Filter,
-  Download,
-  Eye,
-  CheckCircle,
-  XCircle,
-  Clock,
-  TrendingUp,
-  Calendar,
-  CreditCard,
-  RefreshCw
-} from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
+import { useTranslations } from 'next-intl';
+import { motion } from 'framer-motion';
+import { Search, Download, TrendingUp, AlertCircle, Clock, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Payment } from '@/lib/types/superadmin';
+
+// Mock Data (conservée comme demandé)
+const mockPayments =[
+  { id: 'TX-1092', syndicat: 'Syndicat des Taximen', amount: 45000, date: '2026-04-28', status: 'COMPLETED', method: 'Orange Money' },
+  { id: 'TX-1093', syndicat: 'Syndicat des Enseignants', amount: 120000, date: '2026-04-27', status: 'PENDING', method: 'Virement' },
+  { id: 'TX-1094', syndicat: 'Syndicat du Commerce', amount: 25000, date: '2026-04-26', status: 'FAILED', method: 'MTN Mobile Money' },
+];
 
 export const PaymentsManagement: React.FC = () => {
+  const t = useTranslations('Payments');
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'pending' | 'failed' | 'refunded'>('all');
-  const [filterPeriod, setFilterPeriod] = useState<'all' | 'today' | 'week' | 'month' | 'year'>('all');
-  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
-  const [showDetailModal, setShowDetailModal] = useState(false);
-
-  const mockPayments: (Payment & { syndicatName: string })[] = [
-    {
-      id: '1',
-      syndicatId: 'syn-1',
-      syndicatName: 'Syndicat des Enseignants',
-      amount: 149,
-      currency: 'XAF',
-      status: 'COMPLETED',
-      paymentDate: '2024-12-27T10:30:00',
-      paymentMethod: 'Carte bancaire',
-      description: 'Abonnement Professional - Janvier 2025',
-    },
-    {
-      id: '2',
-      syndicatId: 'syn-2',
-      syndicatName: 'Syndicat des Médecins',
-      amount: 399,
-      currency: 'XAF',
-      status: 'COMPLETED',
-      paymentDate: '2024-12-26T14:20:00',
-      paymentMethod: 'Virement bancaire',
-      description: 'Abonnement Enterprise - Janvier 2025',
-    },
-    {
-      id: '3',
-      syndicatId: 'syn-3',
-      syndicatName: 'Syndicat des Infirmiers',
-      amount: 49,
-      currency: 'XAF',
-      status: 'PENDING',
-      paymentDate: '2024-12-27T16:45:00',
-      paymentMethod: 'Carte bancaire',
-      description: 'Abonnement Starter - Janvier 2025',
-    },
-    {
-      id: '4',
-      syndicatId: 'syn-4',
-      syndicatName: 'Syndicat des Avocats',
-      amount: 149,
-      currency: 'XAF',
-      status: 'FAILED',
-      paymentDate: '2024-12-25T09:15:00',
-      paymentMethod: 'Carte bancaire',
-      description: 'Abonnement Professional - Janvier 2025',
-    },
-    {
-      id: '5',
-      syndicatId: 'syn-5',
-      syndicatName: 'Syndicat des Architectes',
-      amount: 149,
-      currency: 'XAF',
-      status: 'REFUNDED',
-      paymentDate: '2024-12-20T11:00:00',
-      paymentMethod: 'Carte bancaire',
-      description: 'Abonnement Professional - Décembre 2024 (Remboursé)',
-    },
-  ];
-
-  const filteredPayments = mockPayments.filter(payment => {
-    const matchesSearch = payment.syndicatName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         payment.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         payment.id.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = filterStatus === 'all' || payment.status === filterStatus.toUpperCase();
-    
-    return matchesSearch && matchesStatus;
-  });
-
-  const totalRevenue = mockPayments
-    .filter(p => p.status === 'COMPLETED')
-    .reduce((sum, p) => sum + p.amount, 0);
-
-  const pendingAmount = mockPayments
-    .filter(p => p.status === 'PENDING')
-    .reduce((sum, p) => sum + p.amount, 0);
-
-  const failedCount = mockPayments.filter(p => p.status === 'FAILED').length;
-
-  const handleViewDetail = (payment: Payment & { syndicatName: string }) => {
-    setSelectedPayment(payment);
-    setShowDetailModal(true);
-  };
-
-  const handleExport = () => {
-    console.log('Exporter les paiements');
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'COMPLETED': return 'success';
-      case 'PENDING': return 'warning';
-      case 'FAILED': return 'error';
-      case 'REFUNDED': return 'info';
-      default: return 'default';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'COMPLETED': return 'Complété';
-      case 'PENDING': return 'En attente';
-      case 'FAILED': return 'Échoué';
-      case 'REFUNDED': return 'Remboursé';
-      default: return status;
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'COMPLETED': return CheckCircle;
-      case 'PENDING': return Clock;
-      case 'FAILED': return XCircle;
-      case 'REFUNDED': return RefreshCw;
-      default: return DollarSign;
-    }
-  };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Gestion des Paiements</h1>
-          <p className="text-gray-600 mt-1">Suivre et gérer tous les paiements de la plateforme</p>
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-4 sm:p-8 space-y-6 w-full max-w-[1600px] mx-auto">
+
+        {/* HEADER */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-black tracking-tight text-slate-900">{t('title')}</h1>
+            <p className="text-sm font-medium text-slate-500 mt-1">{t('subtitle')}</p>
+          </div>
+          <Button variant="secondary" className="bg-white border-slate-200 text-slate-700 shadow-sm rounded-xl font-bold">
+            <Download className="w-4 h-4 mr-2" /> {t('export')}
+          </Button>
         </div>
-        <Button
-          variant="primary"
-          onClick={handleExport}
-          leftIcon={Download}
-        >
-          Exporter
-        </Button>
-      </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="border-0 shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Revenus Totaux</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">XAF{totalRevenue.toLocaleString()}</p>
-              </div>
-              <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-green-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* KPI STATS */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4">
+            <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center border border-emerald-100"><TrendingUp className="w-5 h-5 text-emerald-600"/></div>
+            <div><p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{t('revenue')}</p><h3 className="text-2xl font-black text-slate-900">190,000 XAF</h3></div>
+          </div>
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4">
+            <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center border border-orange-100"><Clock className="w-5 h-5 text-orange-600"/></div>
+            <div><p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{t('pending')}</p><h3 className="text-2xl font-black text-slate-900">120,000 XAF</h3></div>
+          </div>
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4">
+            <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center border border-red-100"><AlertCircle className="w-5 h-5 text-red-600"/></div>
+            <div><p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{t('failed')}</p><h3 className="text-2xl font-black text-slate-900">25,000 XAF</h3></div>
+          </div>
+        </div>
 
-        <Card className="border-0 shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">En Attente</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">XAF{pendingAmount}</p>
-              </div>
-              <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
-                <Clock className="w-6 h-6 text-orange-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Paiements Échoués</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{failedCount}</p>
-              </div>
-              <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
-                <XCircle className="w-6 h-6 text-red-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Total Transactions</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{mockPayments.length}</p>
-              </div>
-              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-[#1877F2]" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Filters */}
-      <Card className="border-0 shadow-lg">
-        <CardContent className="p-6">
-          <div className="space-y-4">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Rechercher un paiement..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent"
-                />
-              </div>
-              <div className="relative">
-                <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <select
-                  value={filterPeriod}
-                  onChange={(e) => setFilterPeriod(e.target.value as typeof filterPeriod)}
-                  className="pl-11 pr-8 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent appearance-none bg-white min-w-[180px]"
-                >
-                  <option value="all">Toutes les périodes</option>
-                  <option value="today">Aujourd&apos;hui</option>
-                  <option value="week">Cette semaine</option>
-                  <option value="month">Ce mois</option>
-                  <option value="year">Cette année</option>
-                </select>
-              </div>
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              <button
-                onClick={() => setFilterStatus('all')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  filterStatus === 'all' ? 'bg-[#1877F2] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Tous
-              </button>
-              <button
-                onClick={() => setFilterStatus('completed')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  filterStatus === 'completed' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Complétés
-              </button>
-              <button
-                onClick={() => setFilterStatus('pending')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  filterStatus === 'pending' ? 'bg-orange-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                En attente
-              </button>
-              <button
-                onClick={() => setFilterStatus('failed')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  filterStatus === 'failed' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Échoués
-              </button>
-              <button
-                onClick={() => setFilterStatus('refunded')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  filterStatus === 'refunded' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Remboursés
-              </button>
+        {/* TABLEAU */}
+        <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-slate-100">
+            <div className="relative w-full max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input type="text" placeholder={t('searchPlaceholder')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white focus:border-[#1877F2] focus:ring-2 focus:ring-[#1877F2]/10 font-medium" />
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Payments List */}
-      <div className="grid grid-cols-1 gap-4">
-        {filteredPayments.map((payment) => {
-          const StatusIcon = getStatusIcon(payment.status);
-          
-          return (
-            <Card key={payment.id} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-4 flex-1">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm ${
-                      payment.status === 'COMPLETED' ? 'bg-green-50' :
-                      payment.status === 'PENDING' ? 'bg-orange-50' :
-                      payment.status === 'FAILED' ? 'bg-red-50' :
-                      'bg-blue-50'
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm whitespace-nowrap">
+              <thead className="bg-slate-50 border-b border-slate-100">
+              <tr>
+                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[10px]">{t('table.transaction')}</th>
+                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[10px]">{t('table.amount')}</th>
+                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[10px]">{t('table.method')}</th>
+                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[10px]">{t('table.date')}</th>
+                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[10px] text-right">{t('table.status')}</th>
+              </tr>
+              </thead>
+              <tbody>
+              {mockPayments.map((p) => (
+                  <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="font-bold text-blue-950">{p.syndicat}</div>
+                      <div className="text-[10px] text-slate-400 font-black mt-0.5">{p.id}</div>
+                    </td>
+                    <td className="px-6 py-4 font-black text-slate-700">{p.amount.toLocaleString()} XAF</td>
+                    <td className="px-6 py-4 font-medium text-slate-600">{p.method}</td>
+                    <td className="px-6 py-4 font-medium text-slate-500">{p.date}</td>
+                    <td className="px-6 py-4 text-right">
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border ${
+                        p.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                            p.status === 'PENDING' ? 'bg-orange-50 text-orange-700 border-orange-200' :
+                                'bg-red-50 text-red-700 border-red-200'
                     }`}>
-                      <StatusIcon className={`w-6 h-6 ${
-                        payment.status === 'COMPLETED' ? 'text-green-600' :
-                        payment.status === 'PENDING' ? 'text-orange-600' :
-                        payment.status === 'FAILED' ? 'text-red-600' :
-                        'text-blue-600'
-                      }`} />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-bold text-gray-900">{payment.syndicatName}</h3>
-                        <Badge variant={getStatusColor(payment.status) as 'success' | 'warning' | 'error' | 'info'}>
-                          {getStatusLabel(payment.status)}
-                        </Badge>
-                      </div>
-                      <p className="text-gray-600 mb-3">{payment.description}</p>
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <DollarSign className="w-4 h-4" />
-                          <span className="font-semibold text-gray-900">
-                            {payment.amount} {payment.currency}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <CreditCard className="w-4 h-4" />
-                          <span>{payment.paymentMethod}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <Calendar className="w-4 h-4" />
-                          <span>{new Date(payment.paymentDate).toLocaleDateString()}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <span>ID: {payment.id}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleViewDetail(payment)}
-                      leftIcon={Eye}
-                    >
-                      Détails
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
-      {/* Detail Modal */}
-      {showDetailModal && selectedPayment && (
-        <div className="fixed inset-0 bg-gray-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900">Détails du Paiement</h2>
-              <button
-                onClick={() => setShowDetailModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <XCircle className="w-6 h-6 text-gray-600" />
-              </button>
-            </div>
-            <div className="p-6 space-y-6">
-              {/* Status Badge */}
-              <div className="flex justify-center">
-                <Badge 
-                  variant={getStatusColor(selectedPayment.status) as 'success' | 'warning' | 'error' | 'info'}
-                  className="text-lg px-6 py-2"
-                >
-                  {getStatusLabel(selectedPayment.status)}
-                </Badge>
-              </div>
-
-              {/* Payment Info */}
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Informations du Paiement</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">ID Transaction</label>
-                    <p className="text-gray-900 font-semibold mt-1">{selectedPayment.id}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Montant</label>
-                    <p className="text-gray-900 font-semibold mt-1">
-                      {selectedPayment.amount} {selectedPayment.currency}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Date</label>
-                    <p className="text-gray-900 font-semibold mt-1">
-                      {new Date(selectedPayment.paymentDate).toLocaleString()}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Méthode</label>
-                    <p className="text-gray-900 font-semibold mt-1">{selectedPayment.paymentMethod}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <label className="text-sm font-medium text-gray-600">Description</label>
-                    <p className="text-gray-900 mt-1">{selectedPayment.description}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Syndicat Info */}
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Syndicat</h3>
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="font-semibold text-gray-900">{(selectedPayment as typeof selectedPayment & { syndicatName: string }).syndicatName}</p>
-                  <p className="text-sm text-gray-600 mt-1">ID: {selectedPayment.syndicatId}</p>
-                </div>
-              </div>
-
-              {/* Actions */}
-              {selectedPayment.status === 'PENDING' && (
-                <div className="flex gap-3 pt-4 border-t border-gray-200">
-                  <Button variant="primary" className="flex-1">
-                    Valider le Paiement
-                  </Button>
-                  <Button variant="danger" className="flex-1">
-                    Annuler
-                  </Button>
-                </div>
-              )}
-              {selectedPayment.status === 'COMPLETED' && (
-                <div className="flex gap-3 pt-4 border-t border-gray-200">
-                  <Button variant="secondary" className="flex-1" leftIcon={Download}>
-                    Télécharger Reçu
-                  </Button>
-                  <Button variant="danger" className="flex-1" leftIcon={RefreshCw}>
-                    Rembourser
-                  </Button>
-                </div>
-              )}
-            </div>
+                      {p.status === 'COMPLETED' && <CheckCircle className="w-3.5 h-3.5" />}
+                      {p.status === 'PENDING' && <Clock className="w-3.5 h-3.5" />}
+                      {p.status === 'FAILED' && <AlertCircle className="w-3.5 h-3.5" />}
+                      {p.status}
+                    </span>
+                    </td>
+                  </tr>
+              ))}
+              </tbody>
+            </table>
           </div>
         </div>
-      )}
-    </div>
+      </motion.div>
   );
 };

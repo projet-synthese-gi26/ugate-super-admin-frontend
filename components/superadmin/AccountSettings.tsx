@@ -1,545 +1,137 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  User, 
-  Mail, 
-  Lock, 
-  Save,
-  Eye,
-  EyeOff,
-  Shield,
-  Bell,
-  Globe,
-  Camera,
-  CheckCircle
-} from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { useTranslations } from 'next-intl';
+import { motion } from 'framer-motion';
+import { User, Lock, Save, Shield, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import { updateProfile, changePassword, logActivity } from '@/lib/services/superadmin.service';
+import { updateProfile, changePassword } from '@/lib/services/superadmin.service';
+import { useAuth } from '@/lib/contexts/AuthContext';
 
 export const AccountSettings: React.FC = () => {
-  const [showPasswordFields, setShowPasswordFields] = useState(false);
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const t = useTranslations('Settings');
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [message, setMessage] = useState<{ type: 'success'|'error', text: string } | null>(null);
 
-  // Récupérer les infos utilisateur depuis le localStorage
-  const [profileData, setProfileData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    role: 'SUPER_ADMIN',
-  });
-
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
-
-  const [notificationSettings, setNotificationSettings] = useState({
-    emailNotifications: true,
-    syndicatApproval: true,
-    paymentAlerts: true,
-    systemUpdates: false,
-  });
+  const [profile, setProfile] = useState({ firstName: '', lastName: '', email: '', phone: '' });
+  const [password, setPassword] = useState({ current: '', new: '', confirm: '' });
 
   useEffect(() => {
-    // Charger les données utilisateur depuis le localStorage ou l'API
-    const userEmail = localStorage.getItem('ugate_user_email') || '';
-    const userName = localStorage.getItem('ugate_user_name') || '';
-    
-    // Séparer le nom complet en prénom et nom
-    const nameParts = userName.split(' ');
-    
-    setProfileData({
-      firstName: nameParts[0] || '',
-      lastName: nameParts.slice(1).join(' ') || '',
-      email: userEmail,
-      phone: '',
-      role: 'SUPER_ADMIN',
-    });
-  }, []);
+    if (user) {
+      setProfile({
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        phone: ''
+      });
+    }
+  },[user]);
 
-  const handleProfileUpdate = async () => {
+  const handleProfileSave = async () => {
+    setIsLoading(true); setMessage(null);
     try {
-      setIsLoading(true);
-      setErrorMessage('');
-      setSuccessMessage('');
-
-      // Validation
-      if (!profileData.firstName || !profileData.lastName || !profileData.email) {
-        setErrorMessage('Veuillez remplir tous les champs obligatoires');
-        return;
-      }
-
-      // Appel API pour mettre à jour le profil
-      await updateProfile({
-        firstName: profileData.firstName,
-        lastName: profileData.lastName,
-        email: profileData.email,
-        phone: profileData.phone,
-      });
-
-      // Mettre à jour le localStorage
-      localStorage.setItem('ugate_user_name', `${profileData.firstName} ${profileData.lastName}`);
-      localStorage.setItem('ugate_user_email', profileData.email);
-
-      // Logger l'activité
-      await logActivity({
-        action: 'UPDATE_PROFILE',
-        entityType: 'USER_ACCOUNT',
-        entityId: 'current-user',
-        details: {
-          fields: ['firstName', 'lastName', 'email', 'phone'],
-          timestamp: new Date().toISOString(),
-        },
-      });
-
-      setSuccessMessage('Profil mis à jour avec succès');
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour du profil:', error);
-      setErrorMessage('Erreur lors de la mise à jour du profil');
+      await updateProfile({ firstName: profile.firstName, lastName: profile.lastName, email: profile.email });
+      setMessage({ type: 'success', text: t('successProfile') });
+    } catch (e) {
+      setMessage({ type: 'error', text: "Erreur" });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handlePasswordChange = async () => {
+  const handlePasswordSave = async () => {
+    if (password.new !== password.confirm) return setMessage({ type: 'error', text: t('errorMismatch') });
+    setIsLoading(true); setMessage(null);
     try {
-      setIsLoading(true);
-      setErrorMessage('');
-      setSuccessMessage('');
-
-      // Validation
-      if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
-        setErrorMessage('Veuillez remplir tous les champs du mot de passe');
-        return;
+      if(user?.id) {
+        await changePassword(user.id, { currentPassword: password.current, newPassword: password.new });
+        setMessage({ type: 'success', text: t('successPassword') });
+        setPassword({ current: '', new: '', confirm: '' });
       }
-
-      if (passwordData.newPassword !== passwordData.confirmPassword) {
-        setErrorMessage('Les nouveaux mots de passe ne correspondent pas');
-        return;
-      }
-
-      if (passwordData.newPassword.length < 8) {
-        setErrorMessage('Le nouveau mot de passe doit contenir au moins 8 caractères');
-        return;
-      }
-
-      // Appel API pour changer le mot de passe
-      await changePassword({
-        currentPassword: passwordData.currentPassword,
-        newPassword: passwordData.newPassword,
-      });
-
-      // Logger l'activité
-      await logActivity({
-        action: 'CHANGE_PASSWORD',
-        entityType: 'USER_ACCOUNT',
-        entityId: 'current-user',
-        details: {
-          timestamp: new Date().toISOString(),
-        },
-      });
-
-      setSuccessMessage('Mot de passe modifié avec succès');
-      setPasswordData({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-      });
-      setShowPasswordFields(false);
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (error) {
-      console.error('Erreur lors du changement de mot de passe:', error);
-      setErrorMessage('Erreur lors du changement de mot de passe. Vérifiez votre mot de passe actuel.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleNotificationUpdate = async () => {
-    try {
-      setIsLoading(true);
-      setErrorMessage('');
-      setSuccessMessage('');
-
-      // Logger l'activité
-      await logActivity({
-        action: 'UPDATE_NOTIFICATION_SETTINGS',
-        entityType: 'USER_ACCOUNT',
-        entityId: 'current-user',
-        details: {
-          settings: notificationSettings,
-          timestamp: new Date().toISOString(),
-        },
-      });
-
-      setSuccessMessage('Préférences de notification mises à jour');
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour des notifications:', error);
-      setErrorMessage('Erreur lors de la mise à jour des notifications');
+    } catch (e) {
+      setMessage({ type: 'error', text: "Erreur" });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Paramètres du Compte</h1>
-        <p className="text-gray-600 mt-1">Gérer vos informations personnelles et préférences</p>
-      </div>
-
-      {/* Success/Error Messages */}
-      {successMessage && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3">
-          <CheckCircle className="w-5 h-5 text-green-600" />
-          <p className="text-green-800 font-medium">{successMessage}</p>
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-4 sm:p-8 space-y-8 max-w-5xl mx-auto">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight text-slate-900">{t('title')}</h1>
+          <p className="text-sm font-medium text-slate-500 mt-1">{t('subtitle')}</p>
         </div>
-      )}
 
-      {errorMessage && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-3">
-          <Shield className="w-5 h-5 text-red-600" />
-          <p className="text-red-800 font-medium">{errorMessage}</p>
-        </div>
-      )}
+        {message && (
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className={`p-4 rounded-xl flex items-center gap-3 font-medium text-sm border ${message.type === 'success' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-red-50 text-red-800 border-red-200'}`}>
+              {message.type === 'success' ? <CheckCircle className="w-5 h-5" /> : <Shield className="w-5 h-5" />}
+              {message.text}
+            </motion.div>
+        )}
 
-      {/* Profile Information */}
-      <Card className="border-0 shadow-lg">
-        <CardHeader className="border-b border-gray-100 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-[#1877F2] rounded-xl flex items-center justify-center">
-                <User className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <CardTitle className="text-xl font-bold text-gray-900">Informations du Profil</CardTitle>
-                <p className="text-sm text-gray-600 mt-1">Mettez à jour vos informations personnelles</p>
-              </div>
-            </div>
-            <Badge variant="info">Super Admin</Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="p-6 space-y-6">
-          {/* Avatar Section */}
-          <div className="flex items-center gap-6 pb-6 border-b border-gray-100">
-            <div className="relative">
-              <div className="w-24 h-24 bg-gradient-to-br from-[#1877F2] to-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-bold">
-                {profileData.firstName.charAt(0)}{profileData.lastName.charAt(0)}
-              </div>
-              <button className="absolute bottom-0 right-0 w-8 h-8 bg-white border-2 border-gray-200 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors">
-                <Camera className="w-4 h-4 text-gray-600" />
-              </button>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">{profileData.firstName} {profileData.lastName}</h3>
-              <p className="text-sm text-gray-600">{profileData.email}</p>
-              <Badge variant="success" className="mt-2">Compte Actif</Badge>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="col-span-1 space-y-2">
+            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white shadow-sm border border-slate-200 text-slate-900 font-bold text-sm">
+              <User className="w-4 h-4 text-[#1877F2]" /> {t('profile')}
+            </button>
+            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-white hover:shadow-sm hover:border hover:border-slate-200 border border-transparent font-bold text-sm transition-all">
+              <Lock className="w-4 h-4" /> {t('security')}
+            </button>
           </div>
 
-          {/* Form Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Prénom *
-              </label>
-              <input
-                type="text"
-                value={profileData.firstName}
-                onChange={(e) => setProfileData({ ...profileData, firstName: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent"
-                placeholder="Votre prénom"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nom *
-              </label>
-              <input
-                type="text"
-                value={profileData.lastName}
-                onChange={(e) => setProfileData({ ...profileData, lastName: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent"
-                placeholder="Votre nom"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email *
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="email"
-                  value={profileData.email}
-                  onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent"
-                  placeholder="votre.email@example.com"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Téléphone
-              </label>
-              <input
-                type="tel"
-                value={profileData.phone}
-                onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent"
-                placeholder="+237 6XX XXX XXX"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end pt-4 border-t border-gray-100">
-            <Button
-              variant="primary"
-              onClick={handleProfileUpdate}
-              leftIcon={Save}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Enregistrement...' : 'Enregistrer les Modifications'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Security Settings */}
-      <Card className="border-0 shadow-lg">
-        <CardHeader className="border-b border-gray-100 p-6">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
-              <Lock className="w-6 h-6 text-red-600" />
-            </div>
-            <div>
-              <CardTitle className="text-xl font-bold text-gray-900">Sécurité</CardTitle>
-              <p className="text-sm text-gray-600 mt-1">Gérer votre mot de passe et paramètres de sécurité</p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="p-6 space-y-6">
-          {!showPasswordFields ? (
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h4 className="font-semibold text-gray-900">Mot de passe</h4>
-                <p className="text-sm text-gray-600 mt-1">Dernière modification il y a 30 jours</p>
-              </div>
-              <Button
-                variant="secondary"
-                onClick={() => setShowPasswordFields(true)}
-                leftIcon={Lock}
-              >
-                Changer le Mot de Passe
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mot de passe actuel *
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type={showCurrentPassword ? 'text' : 'password'}
-                    value={passwordData.currentPassword}
-                    onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                    className="w-full pl-11 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent"
-                    placeholder="Votre mot de passe actuel"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showCurrentPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
+          <div className="col-span-1 lg:col-span-2 space-y-6">
+            {/* Formulaire Profil */}
+            <div className="bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-sm">
+              <div className="p-6 md:p-8 space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">{t('firstName')}</label>
+                    <input type="text" value={profile.firstName} onChange={e => setProfile({...profile, firstName: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#1877F2]/20 outline-none transition-all text-sm font-medium" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">{t('lastName')}</label>
+                    <input type="text" value={profile.lastName} onChange={e => setProfile({...profile, lastName: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#1877F2]/20 outline-none transition-all text-sm font-medium" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">{t('email')}</label>
+                  <input type="email" value={profile.email} disabled className="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed text-sm font-medium" />
                 </div>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nouveau mot de passe *
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type={showNewPassword ? 'text' : 'password'}
-                    value={passwordData.newPassword}
-                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                    className="w-full pl-11 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent"
-                    placeholder="Minimum 8 caractères"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirmer le nouveau mot de passe *
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    value={passwordData.confirmPassword}
-                    onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                    className="w-full pl-11 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent"
-                    placeholder="Confirmez le nouveau mot de passe"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <Button
-                  variant="primary"
-                  onClick={handlePasswordChange}
-                  leftIcon={Save}
-                  disabled={isLoading}
-                  className="flex-1"
-                >
-                  {isLoading ? 'Modification...' : 'Modifier le Mot de Passe'}
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    setShowPasswordFields(false);
-                    setPasswordData({
-                      currentPassword: '',
-                      newPassword: '',
-                      confirmPassword: '',
-                    });
-                  }}
-                  className="flex-1"
-                >
-                  Annuler
+              <div className="bg-slate-50 p-6 border-t border-slate-100 flex justify-end">
+                <Button onClick={handleProfileSave} disabled={isLoading} className="bg-[#0F172A] hover:bg-slate-800 text-white rounded-xl px-6 font-bold shadow-lg shadow-slate-900/20">
+                  {isLoading ? t('saving') : t('save')}
                 </Button>
               </div>
             </div>
-          )}
-        </CardContent>
-      </Card>
 
-      {/* Notification Preferences */}
-      <Card className="border-0 shadow-lg">
-        <CardHeader className="border-b border-gray-100 p-6">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center">
-              <Bell className="w-6 h-6 text-purple-600" />
-            </div>
-            <div>
-              <CardTitle className="text-xl font-bold text-gray-900">Notifications</CardTitle>
-              <p className="text-sm text-gray-600 mt-1">Gérer vos préférences de notification</p>
+            {/* Formulaire Mot de passe */}
+            <div className="bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-sm">
+              <div className="p-6 md:p-8 space-y-6">
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">{t('currentPassword')}</label>
+                  <input type="password" value={password.current} onChange={e => setPassword({...password, current: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#1877F2]/20 outline-none transition-all text-sm font-medium" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">{t('newPassword')}</label>
+                    <input type="password" value={password.new} onChange={e => setPassword({...password, new: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#1877F2]/20 outline-none transition-all text-sm font-medium" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">{t('confirmPassword')}</label>
+                    <input type="password" value={password.confirm} onChange={e => setPassword({...password, confirm: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#1877F2]/20 outline-none transition-all text-sm font-medium" />
+                  </div>
+                </div>
+              </div>
+              <div className="bg-slate-50 p-6 border-t border-slate-100 flex justify-end">
+                <Button onClick={handlePasswordSave} disabled={isLoading} variant="secondary" className="rounded-xl px-6 font-bold shadow-sm">
+                  {isLoading ? t('saving') : t('save')}
+                </Button>
+              </div>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="p-6 space-y-4">
-          <label className="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-            <div className="flex items-center gap-3">
-              <Mail className="w-5 h-5 text-gray-600" />
-              <div>
-                <span className="font-medium text-gray-900 block">Notifications par Email</span>
-                <span className="text-sm text-gray-600">Recevoir des notifications par email</span>
-              </div>
-            </div>
-            <input
-              type="checkbox"
-              checked={notificationSettings.emailNotifications}
-              onChange={(e) => setNotificationSettings({ ...notificationSettings, emailNotifications: e.target.checked })}
-              className="w-5 h-5 text-[#1877F2] border-gray-300 rounded focus:ring-[#1877F2]"
-            />
-          </label>
-
-          <label className="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-            <div className="flex items-center gap-3">
-              <Shield className="w-5 h-5 text-gray-600" />
-              <div>
-                <span className="font-medium text-gray-900 block">Approbations de Syndicats</span>
-                <span className="text-sm text-gray-600">Notifications pour les nouveaux syndicats à approuver</span>
-              </div>
-            </div>
-            <input
-              type="checkbox"
-              checked={notificationSettings.syndicatApproval}
-              onChange={(e) => setNotificationSettings({ ...notificationSettings, syndicatApproval: e.target.checked })}
-              className="w-5 h-5 text-[#1877F2] border-gray-300 rounded focus:ring-[#1877F2]"
-            />
-          </label>
-
-          <label className="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-            <div className="flex items-center gap-3">
-              <Globe className="w-5 h-5 text-gray-600" />
-              <div>
-                <span className="font-medium text-gray-900 block">Alertes de Paiement</span>
-                <span className="text-sm text-gray-600">Notifications pour les transactions et paiements</span>
-              </div>
-            </div>
-            <input
-              type="checkbox"
-              checked={notificationSettings.paymentAlerts}
-              onChange={(e) => setNotificationSettings({ ...notificationSettings, paymentAlerts: e.target.checked })}
-              className="w-5 h-5 text-[#1877F2] border-gray-300 rounded focus:ring-[#1877F2]"
-            />
-          </label>
-
-          <label className="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-            <div className="flex items-center gap-3">
-              <Bell className="w-5 h-5 text-gray-600" />
-              <div>
-                <span className="font-medium text-gray-900 block">Mises à Jour Système</span>
-                <span className="text-sm text-gray-600">Notifications pour les mises à jour et maintenances</span>
-              </div>
-            </div>
-            <input
-              type="checkbox"
-              checked={notificationSettings.systemUpdates}
-              onChange={(e) => setNotificationSettings({ ...notificationSettings, systemUpdates: e.target.checked })}
-              className="w-5 h-5 text-[#1877F2] border-gray-300 rounded focus:ring-[#1877F2]"
-            />
-          </label>
-
-          <div className="flex justify-end pt-4 border-t border-gray-100">
-            <Button
-              variant="primary"
-              onClick={handleNotificationUpdate}
-              leftIcon={Save}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Enregistrement...' : 'Enregistrer les Préférences'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </motion.div>
   );
 };

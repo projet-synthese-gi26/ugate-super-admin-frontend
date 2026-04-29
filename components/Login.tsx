@@ -1,170 +1,139 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Shield, Mail, Lock, AlertCircle } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Shield, Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '@/lib/contexts/AuthContext';
+import { motion } from 'framer-motion';
 
-/**
- * Composant Login
- * 
- * Ce composant gère l'interface de connexion et utilise :
- * - Le contexte d'authentification (useAuth) pour la logique
- * - Le service d'authentification pour les appels API
- * - La validation locale des champs
- */
-
-interface LoginProps {
-  onForgotPassword?: () => void;
-  onRegister?: () => void;
-}
-
-export const Login: React.FC<LoginProps> = ({ onForgotPassword, onRegister }) => {
-  // 🪝 Utiliser le contexte d'authentification
+export const Login: React.FC = () => {
   const { login, error: authError, isLoading: authLoading } = useAuth();
-  
-  // 📊 États locaux pour le formulaire
+
   const [identifier, setIdentifier] = useState('');
-  const [password, setPassword] = useState('');
+  const[password, setPassword] = useState('');
   const [localError, setLocalError] = useState('');
 
-  /**
-   * 📝 FONCTION : Gérer la soumission du formulaire
-   * 
-   * @param e - Événement du formulaire
-   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalError('');
-    
-    // VALIDATION 1 : Vérifier que les champs sont remplis
-    if (!identifier || !password) {
-      setLocalError('Veuillez remplir tous les champs');
-      return;
-    }
 
-    // VALIDATION 2 : Vérifier la longueur du mot de passe
-    if (password.length < 6) {
-      setLocalError('Le mot de passe doit contenir au moins 6 caractères');
+    if (!identifier || !password) {
+      setLocalError('Veuillez remplir tous les champs obligatoires.');
       return;
     }
 
     try {
-      // 🔐 Appeler la fonction login du contexte
-      // Cette fonction va :
-      // 1. Appeler l'API d'authentification
-      // 2. Sauvegarder les tokens
-      // 3. Mettre à jour l'état global
       await login({ identifier, password });
-      
-      // ✅ Si on arrive ici, la connexion a réussi !
-      // Le contexte va automatiquement mettre à jour isAuthenticated
-      // Et app/page.tsx va afficher le dashboard
-      
     } catch (err) {
-      // ❌ En cas d'erreur, elle sera affichée via authError
       console.error('Erreur lors de la connexion:', err);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1877F2] via-blue-600 to-purple-600 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
-      
-      <div className="w-full max-w-md relative">
-        <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/20">
-          {/* Logo & Header */}
-          <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-[#1877F2] to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <Shield className="w-10 h-10 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Super Admin</h1>
-            <p className="text-gray-600">Tableau de bord d&apos;administration</p>
-          </div>
+      <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden bg-[#0F172A]">
 
-          {/* Error Message */}
-          {(localError || authError) && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
-              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-800">{localError || authError}</p>
-            </div>
-          )}
-
-          {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email, Username ou Téléphone
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent transition-all"
-                  placeholder="superadmin@ugate.com"
-                  disabled={authLoading}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Mot de passe
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent transition-all"
-                  placeholder="••••••••"
-                  disabled={authLoading}
-                />
-              </div>
-            </div>
-
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              className="w-full"
-              isLoading={authLoading}
-            >
-              {authLoading ? 'Connexion en cours...' : 'Se connecter'}
-            </Button>
-          </form>
-
-          {/* Liens */}
-          {(onForgotPassword || onRegister) && (
-            <div className="mt-6 flex items-center justify-between text-sm">
-              {onForgotPassword && (
-                <button
-                  onClick={onForgotPassword}
-                  className="text-[#1877F2] hover:underline"
-                >
-                  Mot de passe oublié ?
-                </button>
-              )}
-              {onRegister && (
-                <button
-                  onClick={onRegister}
-                  className="text-[#1877F2] hover:underline"
-                >
-                  Créer un compte
-                </button>
-              )}
-            </div>
-          )}
+        {/* 1. ARRIÈRE-PLAN AVEC FILTRE ADOUCI */}
+        <div className="absolute inset-0 z-0">
+          <img
+              src="https://plus.unsplash.com/premium_vector-1682310916908-3dd53df309b8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="Architecture Business"
+              className="w-full h-full object-cover"
+          />
+          {/* Filtre beaucoup plus léger pour laisser apparaître l'image */}
+          <div className="absolute inset-0 bg-[#0F172A]/40 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/90 via-[#0F172A]/20 to-transparent" />
         </div>
 
-        {/* Footer */}
-        <p className="text-center text-white/80 text-sm mt-6">
-          © 2024 UGate Platform. Tous droits réservés.
-        </p>
+        {/* 2. CARTE DE CONNEXION : GLASSMORPHISM CLAIR (Premium) */}
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="w-full max-w-[420px] relative z-10"
+        >
+          {/* L'effet "Verre Givré Blanc" */}
+          <div
+              className="bg-white/75 backdrop-blur-2xl rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.15)] p-8 sm:p-10 border border-white/60">
+
+            {/* Logo & Titre */}
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center gap-2 mb-6">
+                <div
+                    className="w-16 h-16 bg-[#1877F2] rounded-full flex items-center justify-center shadow-lg shadow-[#1877F2]/20 border border-[#1877F2]/50">
+                  <span className="text-white font-black text-3xl">U</span>
+                </div>
+                <span className="text-4xl font-black text-slate-900 tracking-tighter">Gate</span>
+              </div>
+
+              <h1 className="text-sm font-bold text-slate-500 mb-1 uppercase tracking-widest">Super Admin</h1>
+              <p className="text-slate-600 font-medium text-xs">Contrôle d'accès sécurisé</p>
+            </div>
+
+            {/* Alertes d'Erreur */}
+            {(localError || authError) && (
+                <motion.div
+                    initial={{opacity: 0, scale: 0.95}}
+                    animate={{opacity: 1, scale: 1}}
+                    className="mb-6 p-4 bg-red-50/90 border border-red-200 rounded-xl flex items-start gap-3 backdrop-blur-md"
+                >
+                  <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5"/>
+                  <p className="text-sm font-medium text-red-700">{localError || authError}</p>
+                </motion.div>
+            )}
+
+            {/* Formulaire */}
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-widest">
+                  Identifiant
+                </label>
+                <div className="relative group">
+                  <Mail
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#1877F2] transition-colors"/>
+                  <input
+                      type="text"
+                      value={identifier}
+                      onChange={(e) => setIdentifier(e.target.value)}
+                      className="w-full pl-11 pr-4 py-3 bg-white/50 backdrop-blur-sm border border-white/60 shadow-inner rounded-xl focus:outline-none focus:ring-4 focus:ring-[#1877F2]/15 focus:bg-white focus:border-[#1877F2] transition-all text-slate-900 placeholder:text-slate-400 text-sm font-medium"
+                      placeholder="admin@ugate.com"
+                      disabled={authLoading}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-widest">
+                  Mot de passe
+                </label>
+                <div className="relative group">
+                  <Lock
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#1877F2] transition-colors"/>
+                  <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full pl-11 pr-4 py-3 bg-white/50 backdrop-blur-sm border border-white/60 shadow-inner rounded-xl focus:outline-none focus:ring-4 focus:ring-[#1877F2]/15 focus:bg-white focus:border-[#1877F2] transition-all text-slate-900 placeholder:text-slate-400 text-sm font-medium"
+                      placeholder="••••••••"
+                      disabled={authLoading}
+                  />
+                </div>
+              </div>
+
+              <button
+                  type="submit"
+                  disabled={authLoading}
+                  className="w-full mt-8 py-3.5 bg-[#0F172A] hover:bg-slate-800 text-white rounded-xl font-bold transition-all shadow-xl shadow-slate-900/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed outline-none"
+              >
+                {authLoading ? <Loader2 className="w-5 h-5 animate-spin"/> : null}
+                {authLoading ? 'Authentification...' : 'Accéder à la plateforme'}
+              </button>
+            </form>
+          </div>
+
+          {/* Footer */}
+          <p className="text-center text-slate-300/80 text-xs mt-8 font-medium backdrop-blur-sm inline-block px-4 py-1 rounded-full bg-[#0F172A]/20">
+            © {new Date().getFullYear()} U-Gate Platform. Accès strictement réservé.
+          </p>
+        </motion.div>
       </div>
-    </div>
   );
 };

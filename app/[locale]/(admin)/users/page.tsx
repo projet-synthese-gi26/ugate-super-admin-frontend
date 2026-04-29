@@ -1,0 +1,11 @@
+import { UsersManagement } from '@/components/superadmin/UsersManagement';
+import { getTranslations } from 'next-intl/server';
+
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+    const t = await getTranslations({ locale, namespace: 'Nav' });
+    return { title: `${t('users')} | UGate Super Admin` };
+}
+
+export default function UsersPage() {
+    return <UsersManagement />;
+}

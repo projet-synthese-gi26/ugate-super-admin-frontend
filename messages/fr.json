@@ -1,0 +1,147 @@
+{
+  "Nav": {
+    "dashboard": "Vue d'ensemble",
+    "syndicates": "Syndicats",
+    "users": "Utilisateurs & Rôles",
+    "payments": "Paiements",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "superAdmin": "Super Admin"
+  },
+  "Dashboard": {
+    "title": "Tableau de bord Super Admin",
+    "subtitle": "Surveillez la santé de la plateforme U-Gate et administrez les utilisateurs.",
+    "totalSyndicates": "Syndicats Inscrits",
+    "activeSyndicates": "Syndicats Actifs",
+    "activeMembers": "Utilisateurs Globaux",
+    "totalRevenue": "Revenus Plateforme",
+    "systemOperational": "Système",
+    "pendingStatus": "En attente",
+    "okStatus": "OK"
+  },
+  "Syndicats": {
+    "title": "Gestion des Syndicats",
+    "subtitle": "Consultez, approuvez et gérez les organisations.",
+    "searchPlaceholder": "Rechercher par nom ou domaine...",
+    "filters": {
+      "all": "Tous",
+      "approved": "Approuvés",
+      "pending": "En attente",
+      "active": "Actifs",
+      "inactive": "Inactifs"
+    },
+    "table": {
+      "syndicate": "Syndicat",
+      "domain": "Domaine",
+      "status": "Statut",
+      "date": "Création",
+      "actions": "Actions"
+    },
+    "status": {
+      "approved": "Approuvé",
+      "pending": "En attente",
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "actions": {
+      "profile": "Profil",
+      "members": "Membres",
+      "approve": "Approuver",
+      "disapprove": "Désapprouver",
+      "activate": "Activer",
+      "deactivate": "Désactiver"
+    },
+    "emptyState": "Aucun syndicat trouvé.",
+    "noDescription": "Aucune description fournie.",
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "page": "Page"
+    },
+    "profileModal": {
+      "title": "Profil du Syndicat",
+      "generalInfo": "Informations Générales",
+      "name": "Nom",
+      "domain": "Domaine",
+      "type": "Type",
+      "members": "Membres",
+      "organizationId": "ID Organisation",
+      "description": "Description",
+      "documents": "Documents Officiels",
+      "charte": "Règlement Intérieur / Charte",
+      "statusDoc": "Statuts Officiels",
+      "viewDoc": "Consulter",
+      "noDoc": "Document non disponible",
+      "close": "Fermer"
+    }
+  },
+  "SyndicatMembers": {
+    "title": "Membres du Syndicat",
+    "subtitle": "Consultez la liste des membres actifs et leurs informations de conformité.",
+    "back": "Retour aux syndicats",
+    "searchPlaceholder": "Rechercher un membre...",
+    "table": {
+      "member": "Membre",
+      "role": "Rôle",
+      "joinedAt": "Date d'adhésion",
+      "branch": "ID Antenne"
+    },
+    "emptyState": "Aucun membre trouvé pour ce syndicat."
+  },
+  "Users": {
+    "title": "Utilisateurs & Rôles",
+    "subtitle": "Gérez les accès, rôles et comptes des Utilisateurs de la plateforme",
+    "searchPlaceholder": "Rechercher un email ou un nom...",
+    "table": {
+      "user": "Utilisateur",
+      "service": "Service Origine",
+      "roles": "Rôles",
+      "actions": "Actions"
+    },
+    "actions": {
+      "grantAdmin": "Nommer Admin",
+      "revokeAdmin": "Révoquer Admin",
+      "delete": "Supprimer le compte"
+    },
+    "alerts": {
+      "deleteConfirm": "Voulez-vous vraiment supprimer définitivement le compte : {email} ?",
+      "errorModify": "Erreur lors de la modification des privilèges.",
+      "errorDelete": "Erreur lors de la suppression."
+    },
+    "emptyState": "Aucun utilisateur trouvé.",
+    "noPhone": "Pas de numéro"
+  },
+  "Payments": {
+    "title": "Historique des Paiements",
+    "subtitle": "Suivez les transactions des syndicats.",
+    "export": "Exporter (CSV)",
+    "revenue": "Revenus Totaux",
+    "pending": "En attente",
+    "failed": "Échoués",
+    "searchPlaceholder": "Chercher une transaction...",
+    "table": {
+      "transaction": "Transaction",
+      "amount": "Montant",
+      "method": "Méthode",
+      "date": "Date",
+      "status": "Statut"
+    }
+  },
+  "Settings": {
+    "title": "Paramètres du compte",
+    "subtitle": "Gérez vos informations et votre sécurité.",
+    "profile": "Profil Personnel",
+    "security": "Changer de mot de passe",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "email": "Adresse Email",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "save": "Enregistrer les modifications",
+    "saving": "Enregistrement...",
+    "successProfile": "Profil mis à jour avec succès.",
+    "successPassword": "Mot de passe modifié avec succès.",
+    "errorMismatch": "Les mots de passe ne correspondent pas."
+  }
+}
