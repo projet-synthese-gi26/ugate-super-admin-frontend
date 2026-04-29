@@ -34,7 +34,7 @@ export const Login: React.FC = () => {
         {/* 1. ARRIÈRE-PLAN AVEC FILTRE ADOUCI */}
         <div className="absolute inset-0 z-0">
           <img
-              src="https://plus.unsplash.com/premium_vector-1720931652698-0191ac7abb87?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDV8fGNvcnBvcmF0ZXxlbnwwfHwwfHx8MA%3D%3D"
+              src="https://plus.unsplash.com/premium_vector-1682310916908-3dd53df309b8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Architecture Business"
               className="w-full h-full object-cover"
           />
