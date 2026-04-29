@@ -1,7 +1,9 @@
 import { SyndicatMembers } from '@/components/superadmin/SyndicatMembers';
 import { getTranslations } from 'next-intl/server';
 
-export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+// Correction : params est une Promesse
+export async function generateMetadata({ params }: { params: Promise<{ locale: string, id: string }> }) {
+    const { locale } = await params;
     const t = await getTranslations({ locale, namespace: 'SyndicatMembers' });
     return { title: `${t('title')} | UGate Super Admin` };
 }

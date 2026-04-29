@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "../globals.css"; // Assurez-vous que le chemin pointe bien vers app/globals.css
+import "../globals.css";
 import { AuthProvider } from "@/lib/contexts/AuthContext";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
@@ -14,11 +14,13 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
                                              children,
-                                             params: { locale }
+                                             params
                                          }: {
     children: React.ReactNode;
-    params: { locale: string };
+    params: Promise<{ locale: string }>;
 }) {
+
+    const { locale } = await params;
     const messages = await getMessages();
 
     return (

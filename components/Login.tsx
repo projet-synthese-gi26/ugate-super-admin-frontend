@@ -61,7 +61,7 @@ export const Login: React.FC = () => {
                     className="w-16 h-16 bg-[#1877F2] rounded-full flex items-center justify-center shadow-lg shadow-[#1877F2]/20 border border-[#1877F2]/50">
                   <span className="text-white font-black text-3xl">U</span>
                 </div>
-                <span className="text-4xl font-black text-slate-900 tracking-tighter">Gate</span>
+                <span className="text-4xl font-black text-slate-900 tracking-tighter">UGate</span>
               </div>
 
               <h1 className="text-sm font-bold text-slate-500 mb-1 uppercase tracking-widest">Super Admin</h1>
