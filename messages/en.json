@@ -1,116 +1,334 @@
 {
   "Nav": {
-    "dashboard": "Vue d'ensemble",
-    "syndicates": "Syndicats",
-    "users": "Utilisateurs & Rôles",
-    "payments": "Paiements",
-    "settings": "Paramètres",
-    "logout": "Déconnexion"
+    "dashboard": "Dashboard",
+    "syndicates": "Syndicates",
+    "users": "Users & Roles",
+    "payments": "Payments",
+    "settings": "Settings",
+    "logout": "Log Out",
+    "superAdmin": "Super Admin",
+    "flaggedContent": "Flagged Content",
+    "activityLogs": "Activity Logs",
+    "subscriptionPlans": "Subscription Plans",
+    "bailConfig": "Lease Configuration"
   },
   "Dashboard": {
-    "title": "Tableau de bord Super Admin",
-    "subtitle": "Surveillez la santé de la plateforme U-Gate et administrez les utilisateurs.",
-    "totalSyndicates": "Syndicats Inscrits",
-    "activeSyndicates": "Syndicats Actifs",
-    "activeMembers": "Utilisateurs Globaux",
-    "totalRevenue": "Revenus Plateforme",
-    "quickActions": "Actions Rapides",
-    "manageSyndicates": "Gérer les Syndicats",
-    "manageSyndicatesDesc": "Approuvez, activez ou suspendez les organisations.",
-    "manageUsers": "Base Utilisateurs",
-    "manageUsersDesc": "Consultez la base de données Auth (TraMaSys).",
-    "systemOperational": "Système opérationnel"
+    "title": "Super Admin Dashboard",
+    "subtitle": "Monitor the health of the U-Gate platform and administer users.",
+    "totalSyndicates": "Enrolled Syndicates",
+    "activeSyndicates": "Active Syndicates",
+    "activeMembers": "Global Users",
+    "totalRevenue": "Platform Revenue",
+    "systemOperational": "System Operational",
+    "pendingStatus": "Pending",
+    "okStatus": "OK",
+    "quickActions": "Quick Actions",
+    "manageSyndicates": "Manage Syndicates",
+    "manageSyndicatesDesc": "Approve, activate or suspend organizations.",
+    "manageUsers": "User Base",
+    "manageUsersDesc": "View the Auth (TraMaSys) database."
   },
   "Syndicats": {
-    "title": "Gestion des Syndicats",
-    "subtitle": "Consultez, approuvez et gérez les organisations.",
-    "searchPlaceholder": "Rechercher par nom ou domaine...",
+    "title": "Syndicates Management",
+    "subtitle": "View, approve and manage organizations.",
+    "searchPlaceholder": "Search by name or domain...",
     "filters": {
-      "all": "Tous",
-      "approved": "Approuvés",
-      "pending": "En attente",
-      "active": "Actifs",
-      "inactive": "Inactifs"
+      "all": "All",
+      "approved": "Approved",
+      "pending": "Pending",
+      "active": "Active",
+      "inactive": "Inactive"
     },
     "table": {
-      "syndicate": "Syndicat",
-      "domain": "Domaine",
-      "status": "Statut",
-      "date": "Création",
+      "syndicate": "Syndicate",
+      "domain": "Domain",
+      "status": "Status",
+      "date": "Created",
       "actions": "Actions"
     },
     "status": {
-      "approved": "Approuvé",
-      "pending": "En attente",
-      "active": "Actif",
-      "inactive": "Inactif"
+      "approved": "Approved",
+      "pending": "Pending",
+      "active": "Active",
+      "inactive": "Inactive"
     },
     "actions": {
-      "approve": "Approuver",
-      "disapprove": "Désapprouver",
-      "activate": "Activer",
-      "deactivate": "Désactiver"
+      "profile": "Profile",
+      "members": "Members",
+      "approve": "Approve",
+      "disapprove": "Disapprove",
+      "activate": "Activate",
+      "deactivate": "Deactivate"
     },
-    "emptyState": "Aucun syndicat trouvé.",
+    "emptyState": "No syndicates found.",
+    "noDescription": "No description provided.",
     "pagination": {
-      "previous": "Précédent",
-      "next": "Suivant",
+      "previous": "Previous",
+      "next": "Next",
       "page": "Page"
+    },
+    "profileModal": {
+      "title": "Syndicate Profile",
+      "generalInfo": "General Information",
+      "name": "Name",
+      "domain": "Domain",
+      "type": "Type",
+      "members": "Members",
+      "organizationId": "Organization ID",
+      "description": "Description",
+      "documents": "Official Documents",
+      "charte": "Internal Regulations / Charter",
+      "statusDoc": "Official Statutes",
+      "viewDoc": "View",
+      "noDoc": "Document not available",
+      "close": "Close"
     }
   },
-  "Users": {
-    "title": "Utilisateurs & Rôles",
-    "subtitle": "Gérez les accès, rôles et comptes de l'API TraMaSys Auth.",
-    "searchPlaceholder": "Rechercher un email ou un nom...",
+  "SyndicatMembers": {
+    "title": "Syndicate Members",
+    "subtitle": "View the list of active members and their compliance information.",
+    "back": "Back to syndicates",
+    "searchPlaceholder": "Search for a member...",
     "table": {
-      "user": "Utilisateur",
-      "service": "Service Origine",
-      "roles": "Rôles",
+      "member": "Member",
+      "role": "Role",
+      "joinedAt": "Join Date",
+      "branch": "Branch ID"
+    },
+    "emptyState": "No members found for this syndicate."
+  },
+  "Users": {
+    "title": "Users & Roles",
+    "subtitle": "Manage access, roles, and accounts for platform Users",
+    "searchPlaceholder": "Search for an email or name...",
+    "table": {
+      "user": "User",
+      "service": "Origin Service",
+      "roles": "Roles",
       "actions": "Actions"
     },
     "actions": {
-      "grantAdmin": "Nommer Admin",
-      "revokeAdmin": "Révoquer Admin",
-      "delete": "Supprimer le compte"
+      "grantAdmin": "Grant Admin",
+      "revokeAdmin": "Revoke Admin",
+      "delete": "Delete Account"
     },
     "alerts": {
-      "deleteConfirm": "Voulez-vous vraiment supprimer définitivement le compte : {email} ?",
-      "errorModify": "Erreur lors de la modification des privilèges.",
-      "errorDelete": "Erreur lors de la suppression."
+      "deleteConfirm": "Are you sure you want to permanently delete the account: {email}?",
+      "errorModify": "Error modifying privileges.",
+      "errorDelete": "Error during deletion."
     },
-    "emptyState": "Aucun utilisateur trouvé."
+    "emptyState": "No users found.",
+    "noPhone": "No phone number"
   },
   "Payments": {
-    "title": "Historique des Paiements",
-    "subtitle": "Suivez les transactions des syndicats.",
-    "export": "Exporter (CSV)",
-    "revenue": "Revenus Totaux",
-    "pending": "En attente",
-    "failed": "Échoués",
-    "searchPlaceholder": "Chercher une transaction...",
+    "title": "Payment History",
+    "subtitle": "Track syndicate transactions.",
+    "export": "Export (CSV)",
+    "revenue": "Total Revenue",
+    "pending": "Pending",
+    "failed": "Failed",
+    "searchPlaceholder": "Search for a transaction...",
     "table": {
       "transaction": "Transaction",
-      "amount": "Montant",
-      "method": "Méthode",
+      "amount": "Amount",
+      "method": "Method",
       "date": "Date",
-      "status": "Statut"
+      "status": "Status"
     }
   },
   "Settings": {
-    "title": "Paramètres du compte",
-    "subtitle": "Gérez vos informations et votre sécurité.",
-    "profile": "Profil Personnel",
-    "security": "Changer de mot de passe",
-    "firstName": "Prénom",
-    "lastName": "Nom",
-    "email": "Adresse Email",
-    "currentPassword": "Mot de passe actuel",
-    "newPassword": "Nouveau mot de passe",
-    "confirmPassword": "Confirmer le mot de passe",
-    "save": "Enregistrer les modifications",
-    "saving": "Enregistrement...",
-    "successProfile": "Profil mis à jour avec succès.",
-    "successPassword": "Mot de passe modifié avec succès.",
-    "errorMismatch": "Les mots de passe ne correspondent pas."
+    "title": "Account Settings",
+    "subtitle": "Manage your information and security.",
+    "profile": "Personal Profile",
+    "security": "Change Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email Address",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "save": "Save Changes",
+    "saving": "Saving...",
+    "successProfile": "Profile updated successfully.",
+    "successPassword": "Password changed successfully.",
+    "errorMismatch": "Passwords do not match."
+  },
+  "Flagged": {
+    "title": "Flagged Content",
+    "subtitle": "Review and moderate flagged posts and events.",
+    "tabs": {
+      "all": "All",
+      "publications": "Posts",
+      "events": "Events"
+    },
+    "emptyState": "No flagged content to review at the moment.",
+    "actions": {
+      "approve": "Approve (Dismiss)",
+      "delete": "Delete Content"
+    }
+  },
+  "ActivityLogs": {
+    "title": "Activity Logs",
+    "subtitle": "Track all actions performed on the platform",
+    "refresh": "Refresh",
+    "export": "Export",
+    "stats": {
+      "total": "Total Actions",
+      "today": "Today",
+      "activeUsers": "Active Users",
+      "actionTypes": "Action Types"
+    },
+    "searchPlaceholder": "Search...",
+    "filters": {
+      "allActions": "All actions",
+      "allEntities": "All entities"
+    },
+    "periods": {
+      "all": "All time",
+      "today": "Today",
+      "week": "This week",
+      "month": "This month"
+    },
+    "details": {
+      "title": "Log Details",
+      "generalInfo": "General Information",
+      "logId": "Log ID",
+      "dateTime": "Date & Time",
+      "user": "User",
+      "entityType": "Entity Type",
+      "entityConcerned": "Entity Concerned",
+      "techInfo": "Technical Information",
+      "ipAddress": "IP Address",
+      "userAgent": "User Agent",
+      "extraDetails": "Extra Details"
+    },
+    "actions": {
+      "view": "View Details"
+    }
+  },
+  "BailConfiguration": {
+    "title": "Lease Expiration Rules",
+    "subtitle": "Manage validity periods and auto-deactivation rules",
+    "newRule": "New Rule",
+    "info": {
+      "title": "About Expiration Rules (Lease)",
+      "desc": "Expiration rules allow you to automatically set the validity period of subscriptions based on the syndicate type. You can configure alerts before expiration and enable automatic deactivation of expired syndicates."
+    },
+    "stats": {
+      "activeRules": "Active Rules",
+      "autoDeactivation": "Auto-Deactivation",
+      "avgDuration": "Average Duration"
+    },
+    "table": {
+      "expiryDays": "Validity duration",
+      "warningDays": "Alert before expiration",
+      "autoDeactivate": "Auto deactivation",
+      "created": "Created",
+      "updated": "Updated"
+    },
+    "status": {
+      "activated": "Activated",
+      "deactivated": "Deactivated",
+      "auto": "Auto",
+      "manual": "Manual"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "saveCreate": "Create Rule",
+      "saveEdit": "Save Changes",
+      "cancel": "Cancel"
+    },
+    "modal": {
+      "createTitle": "Create a Rule",
+      "editTitle": "Edit Rule"
+    },
+    "form": {
+      "syndicateType": "Syndicate Type",
+      "syndicateTypeHint": "The type of syndicate this rule applies to",
+      "expiryDays": "Validity Duration (days)",
+      "warningDays": "Alert Before Expiration (days)",
+      "autoDeactivate": "Auto Deactivation",
+      "autoDeactivateHint": "The syndicate will be automatically deactivated upon subscription expiration"
+    },
+    "preview": {
+      "title": "Configuration Preview"
+    }
+  },
+  "SubscriptionPlans": {
+    "title": "Subscription Plans",
+    "subtitle": "Manage platform offers and pricing",
+    "createPlan": "Create Plan",
+    "stats": {
+      "activePlans": "Active Plans",
+      "totalPlans": "Total Plans",
+      "subscribers": "Subscribers",
+      "revenue": "Monthly Revenue"
+    },
+    "searchPlaceholder": "Search for a plan...",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "features": "Features",
+    "actions": {
+      "edit": "Edit",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "delete": "Delete",
+      "saveCreate": "Create Plan",
+      "saveEdit": "Save",
+      "cancel": "Cancel"
+    },
+    "modal": {
+      "createTitle": "Create a Plan",
+      "editTitle": "Edit Plan"
+    },
+    "form": {
+      "basicInfo": "Basic Information",
+      "name": "Plan Name",
+      "description": "Description",
+      "pricing": "Pricing",
+      "price": "Price",
+      "currency": "Currency",
+      "duration": "Duration (days)",
+      "limits": "Limits & Quotas",
+      "maxMembers": "Max Members",
+      "maxBranches": "Max Branches",
+      "maxPublications": "Posts/Month",
+      "maxEvents": "Events/Month",
+      "maxProducts": "Max Products",
+      "maxServices": "Max Services",
+      "featuresList": "Included Features",
+      "addFeature": "Add a feature...",
+      "add": "Add",
+      "activateImmediately": "Activate this plan immediately"
+    }
+  },
+  "Auth": {
+    "login": {
+      "title": "UGate",
+      "subtitle": "Super Admin",
+      "description": "Secure access control",
+      "identifier": "Identifier",
+      "password": "Password",
+      "submit": "Access Platform",
+      "loading": "Authenticating...",
+      "footer": "© 2026 U-Gate Platform. Strictly reserved access."
+    },
+    "register": {
+      "title": "Create Admin Account",
+      "subtitle": "Register your administrator account",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "username": "Username",
+      "email": "Email Address",
+      "phone": "Phone (optional)",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "cancel": "Cancel",
+      "submit": "Create Account",
+      "loading": "Creating..."
+    }
   }
 }

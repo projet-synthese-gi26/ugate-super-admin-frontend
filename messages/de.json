@@ -1,116 +1,334 @@
 {
   "Nav": {
-    "dashboard": "Vue d'ensemble",
-    "syndicates": "Syndicats",
-    "users": "Utilisateurs & Rôles",
-    "payments": "Paiements",
-    "settings": "Paramètres",
-    "logout": "Déconnexion"
+    "dashboard": "Übersicht",
+    "syndicates": "Gewerkschaften",
+    "users": "Benutzer & Rollen",
+    "payments": "Zahlungen",
+    "settings": "Einstellungen",
+    "logout": "Abmelden",
+    "superAdmin": "Super Admin",
+    "flaggedContent": "Gemeldete Inhalte",
+    "activityLogs": "Aktivitätsprotokolle",
+    "subscriptionPlans": "Abonnementpläne",
+    "bailConfig": "Kaution-Konfiguration"
   },
   "Dashboard": {
-    "title": "Tableau de bord Super Admin",
-    "subtitle": "Surveillez la santé de la plateforme U-Gate et administrez les utilisateurs.",
-    "totalSyndicates": "Syndicats Inscrits",
-    "activeSyndicates": "Syndicats Actifs",
-    "activeMembers": "Utilisateurs Globaux",
-    "totalRevenue": "Revenus Plateforme",
-    "quickActions": "Actions Rapides",
-    "manageSyndicates": "Gérer les Syndicats",
-    "manageSyndicatesDesc": "Approuvez, activez ou suspendez les organisations.",
-    "manageUsers": "Base Utilisateurs",
-    "manageUsersDesc": "Consultez la base de données Auth (TraMaSys).",
-    "systemOperational": "Système opérationnel"
+    "title": "Super Admin Dashboard",
+    "subtitle": "Überwachen Sie den Zustand der U-Gate-Plattform und verwalten Sie Benutzer.",
+    "totalSyndicates": "Eingeschriebene Gewerkschaften",
+    "activeSyndicates": "Aktive Gewerkschaften",
+    "activeMembers": "Globale Benutzer",
+    "totalRevenue": "Plattformeinnahmen",
+    "systemOperational": "Systembetriebsbereit",
+    "pendingStatus": "Ausstehend",
+    "okStatus": "OK",
+    "quickActions": "Schnellaktionen",
+    "manageSyndicates": "Gewerkschaften verwalten",
+    "manageSyndicatesDesc": "Organisationen genehmigen, aktivieren oder sperren.",
+    "manageUsers": "Benutzerbasis",
+    "manageUsersDesc": "Auth (TraMaSys) Datenbank anzeigen."
   },
   "Syndicats": {
-    "title": "Gestion des Syndicats",
-    "subtitle": "Consultez, approuvez et gérez les organisations.",
-    "searchPlaceholder": "Rechercher par nom ou domaine...",
+    "title": "Gewerkschaftsverwaltung",
+    "subtitle": "Organisationen anzeigen, genehmigen und verwalten.",
+    "searchPlaceholder": "Suche nach Name oder Domain...",
     "filters": {
-      "all": "Tous",
-      "approved": "Approuvés",
-      "pending": "En attente",
-      "active": "Actifs",
-      "inactive": "Inactifs"
+      "all": "Alle",
+      "approved": "Genehmigt",
+      "pending": "Ausstehend",
+      "active": "Aktiv",
+      "inactive": "Inaktiv"
     },
     "table": {
-      "syndicate": "Syndicat",
-      "domain": "Domaine",
-      "status": "Statut",
-      "date": "Création",
-      "actions": "Actions"
+      "syndicate": "Gewerkschaft",
+      "domain": "Domain",
+      "status": "Status",
+      "date": "Erstellt",
+      "actions": "Aktionen"
     },
     "status": {
-      "approved": "Approuvé",
-      "pending": "En attente",
-      "active": "Actif",
-      "inactive": "Inactif"
+      "approved": "Genehmigt",
+      "pending": "Ausstehend",
+      "active": "Aktiv",
+      "inactive": "Inaktiv"
     },
     "actions": {
-      "approve": "Approuver",
-      "disapprove": "Désapprouver",
-      "activate": "Activer",
-      "deactivate": "Désactiver"
+      "profile": "Profil",
+      "members": "Mitglieder",
+      "approve": "Genehmigen",
+      "disapprove": "Ablehnen",
+      "activate": "Aktivieren",
+      "deactivate": "Deaktivieren"
     },
-    "emptyState": "Aucun syndicat trouvé.",
+    "emptyState": "Keine Gewerkschaften gefunden.",
+    "noDescription": "Keine Beschreibung angegeben.",
     "pagination": {
-      "previous": "Précédent",
-      "next": "Suivant",
-      "page": "Page"
+      "previous": "Zurück",
+      "next": "Weiter",
+      "page": "Seite"
+    },
+    "profileModal": {
+      "title": "Gewerkschaftsprofil",
+      "generalInfo": "Allgemeine Informationen",
+      "name": "Name",
+      "domain": "Domain",
+      "type": "Typ",
+      "members": "Mitglieder",
+      "organizationId": "Organisations-ID",
+      "description": "Beschreibung",
+      "documents": "Offizielle Dokumente",
+      "charte": "Interne Vorschriften / Charta",
+      "statusDoc": "Offizielle Statuten",
+      "viewDoc": "Ansehen",
+      "noDoc": "Dokument nicht verfügbar",
+      "close": "Schließen"
     }
   },
-  "Users": {
-    "title": "Utilisateurs & Rôles",
-    "subtitle": "Gérez les accès, rôles et comptes de l'API TraMaSys Auth.",
-    "searchPlaceholder": "Rechercher un email ou un nom...",
+  "SyndicatMembers": {
+    "title": "Gewerkschaftsmitglieder",
+    "subtitle": "Sehen Sie sich die Liste der aktiven Mitglieder und deren Compliance-Informationen an.",
+    "back": "Zurück zu Gewerkschaften",
+    "searchPlaceholder": "Nach einem Mitglied suchen...",
     "table": {
-      "user": "Utilisateur",
-      "service": "Service Origine",
-      "roles": "Rôles",
-      "actions": "Actions"
+      "member": "Mitglied",
+      "role": "Rolle",
+      "joinedAt": "Beitrittsdatum",
+      "branch": "Zweigstellen-ID"
+    },
+    "emptyState": "Keine Mitglieder für diese Gewerkschaft gefunden."
+  },
+  "Users": {
+    "title": "Benutzer & Rollen",
+    "subtitle": "Verwalten Sie Zugang, Rollen und Konten von Plattformbenutzern",
+    "searchPlaceholder": "Suche nach einer E-Mail oder einem Namen...",
+    "table": {
+      "user": "Benutzer",
+      "service": "Ursprungsdienst",
+      "roles": "Rollen",
+      "actions": "Aktionen"
     },
     "actions": {
-      "grantAdmin": "Nommer Admin",
-      "revokeAdmin": "Révoquer Admin",
-      "delete": "Supprimer le compte"
+      "grantAdmin": "Admin gewähren",
+      "revokeAdmin": "Admin widerrufen",
+      "delete": "Konto löschen"
     },
     "alerts": {
-      "deleteConfirm": "Voulez-vous vraiment supprimer définitivement le compte : {email} ?",
-      "errorModify": "Erreur lors de la modification des privilèges.",
-      "errorDelete": "Erreur lors de la suppression."
+      "deleteConfirm": "Möchten Sie das Konto wirklich dauerhaft löschen: {email}?",
+      "errorModify": "Fehler beim Ändern der Berechtigungen.",
+      "errorDelete": "Fehler beim Löschen."
     },
-    "emptyState": "Aucun utilisateur trouvé."
+    "emptyState": "Keine Benutzer gefunden.",
+    "noPhone": "Kein Telefon"
   },
   "Payments": {
-    "title": "Historique des Paiements",
-    "subtitle": "Suivez les transactions des syndicats.",
-    "export": "Exporter (CSV)",
-    "revenue": "Revenus Totaux",
-    "pending": "En attente",
-    "failed": "Échoués",
-    "searchPlaceholder": "Chercher une transaction...",
+    "title": "Zahlungsverlauf",
+    "subtitle": "Verfolgen Sie Gewerkschaftstransaktionen.",
+    "export": "Exportieren (CSV)",
+    "revenue": "Gesamteinnahmen",
+    "pending": "Ausstehend",
+    "failed": "Fehlgeschlagen",
+    "searchPlaceholder": "Nach einer Transaktion suchen...",
     "table": {
-      "transaction": "Transaction",
-      "amount": "Montant",
-      "method": "Méthode",
-      "date": "Date",
-      "status": "Statut"
+      "transaction": "Transaktion",
+      "amount": "Betrag",
+      "method": "Methode",
+      "date": "Datum",
+      "status": "Status"
     }
   },
   "Settings": {
-    "title": "Paramètres du compte",
-    "subtitle": "Gérez vos informations et votre sécurité.",
-    "profile": "Profil Personnel",
-    "security": "Changer de mot de passe",
-    "firstName": "Prénom",
-    "lastName": "Nom",
-    "email": "Adresse Email",
-    "currentPassword": "Mot de passe actuel",
-    "newPassword": "Nouveau mot de passe",
-    "confirmPassword": "Confirmer le mot de passe",
-    "save": "Enregistrer les modifications",
-    "saving": "Enregistrement...",
-    "successProfile": "Profil mis à jour avec succès.",
-    "successPassword": "Mot de passe modifié avec succès.",
-    "errorMismatch": "Les mots de passe ne correspondent pas."
+    "title": "Kontoeinstellungen",
+    "subtitle": "Verwalten Sie Ihre Informationen und Sicherheit.",
+    "profile": "Persönliches Profil",
+    "security": "Passwort ändern",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "email": "E-Mail-Adresse",
+    "currentPassword": "Aktuelles Passwort",
+    "newPassword": "Neues Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "save": "Änderungen speichern",
+    "saving": "Speichern...",
+    "successProfile": "Profil erfolgreich aktualisiert.",
+    "successPassword": "Passwort erfolgreich geändert.",
+    "errorMismatch": "Passwörter stimmen nicht überein."
+  },
+  "Flagged": {
+    "title": "Gemeldete Inhalte",
+    "subtitle": "Überprüfen und moderieren Sie gemeldete Beiträge und Veranstaltungen.",
+    "tabs": {
+      "all": "Alle",
+      "publications": "Beiträge",
+      "events": "Veranstaltungen"
+    },
+    "emptyState": "Derzeit keine gemeldeten Inhalte zu überprüfen.",
+    "actions": {
+      "approve": "Meldung verwerfen",
+      "delete": "Inhalt löschen"
+    }
+  },
+  "ActivityLogs": {
+    "title": "Aktivitätsprotokolle",
+    "subtitle": "Verfolgen Sie alle auf der Plattform durchgeführten Aktionen",
+    "refresh": "Aktualisieren",
+    "export": "Exportieren",
+    "stats": {
+      "total": "Gesamte Aktionen",
+      "today": "Heute",
+      "activeUsers": "Aktive Benutzer",
+      "actionTypes": "Aktionstypen"
+    },
+    "searchPlaceholder": "Suchen...",
+    "filters": {
+      "allActions": "Alle Aktionen",
+      "allEntities": "Alle Entitäten"
+    },
+    "periods": {
+      "all": "Gesamter Zeitraum",
+      "today": "Heute",
+      "week": "Diese Woche",
+      "month": "Diesen Monat"
+    },
+    "details": {
+      "title": "Protokolldetails",
+      "generalInfo": "Allgemeine Informationen",
+      "logId": "Protokoll-ID",
+      "dateTime": "Datum & Uhrzeit",
+      "user": "Benutzer",
+      "entityType": "Entitätstyp",
+      "entityConcerned": "Betroffene Entität",
+      "techInfo": "Technische Informationen",
+      "ipAddress": "IP-Adresse",
+      "userAgent": "User Agent",
+      "extraDetails": "Zusätzliche Details"
+    },
+    "actions": {
+      "view": "Details anzeigen"
+    }
+  },
+  "BailConfiguration": {
+    "title": "Ablaufregeln (Kaution)",
+    "subtitle": "Gültigkeitsdauer und automatische Deaktivierungsregeln verwalten",
+    "newRule": "Neue Regel",
+    "info": {
+      "title": "Über Ablaufregeln (Kaution)",
+      "desc": "Ablaufregeln ermöglichen es Ihnen, die Gültigkeitsdauer von Abonnements basierend auf dem Gewerkschaftstyp automatisch festzulegen. Sie können Benachrichtigungen vor Ablauf konfigurieren und die automatische Deaktivierung abgelaufener Gewerkschaften aktivieren."
+    },
+    "stats": {
+      "activeRules": "Aktive Regeln",
+      "autoDeactivation": "Auto-Deaktivierung",
+      "avgDuration": "Durchschnittliche Dauer"
+    },
+    "table": {
+      "expiryDays": "Gültigkeitsdauer",
+      "warningDays": "Warnung vor Ablauf",
+      "autoDeactivate": "Auto-Deaktivierung",
+      "created": "Erstellt",
+      "updated": "Aktualisiert"
+    },
+    "status": {
+      "activated": "Aktiviert",
+      "deactivated": "Deaktiviert",
+      "auto": "Auto",
+      "manual": "Manuell"
+    },
+    "actions": {
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "saveCreate": "Regel erstellen",
+      "saveEdit": "Änderungen speichern",
+      "cancel": "Abbrechen"
+    },
+    "modal": {
+      "createTitle": "Regel erstellen",
+      "editTitle": "Regel bearbeiten"
+    },
+    "form": {
+      "syndicateType": "Gewerkschaftstyp",
+      "syndicateTypeHint": "Der Gewerkschaftstyp, für den diese Regel gilt",
+      "expiryDays": "Gültigkeitsdauer (Tage)",
+      "warningDays": "Warnung vor Ablauf (Tage)",
+      "autoDeactivate": "Automatische Deaktivierung",
+      "autoDeactivateHint": "Die Gewerkschaft wird nach Ablauf des Abonnements automatisch deaktiviert"
+    },
+    "preview": {
+      "title": "Konfigurationsvorschau"
+    }
+  },
+  "SubscriptionPlans": {
+    "title": "Abonnementpläne",
+    "subtitle": "Plattformangebote und Preise verwalten",
+    "createPlan": "Plan erstellen",
+    "stats": {
+      "activePlans": "Aktive Pläne",
+      "totalPlans": "Gesamtpläne",
+      "subscribers": "Abonnenten",
+      "revenue": "Monatlicher Umsatz"
+    },
+    "searchPlaceholder": "Nach einem Plan suchen...",
+    "status": {
+      "active": "Aktiv",
+      "inactive": "Inaktiv"
+    },
+    "features": "Eigenschaften",
+    "actions": {
+      "edit": "Bearbeiten",
+      "deactivate": "Deaktivieren",
+      "activate": "Aktivieren",
+      "delete": "Löschen",
+      "saveCreate": "Plan erstellen",
+      "saveEdit": "Speichern",
+      "cancel": "Abbrechen"
+    },
+    "modal": {
+      "createTitle": "Plan erstellen",
+      "editTitle": "Plan bearbeiten"
+    },
+    "form": {
+      "basicInfo": "Grundinformationen",
+      "name": "Planname",
+      "description": "Beschreibung",
+      "pricing": "Preisgestaltung",
+      "price": "Preis",
+      "currency": "Währung",
+      "duration": "Dauer (Tage)",
+      "limits": "Limits & Quoten",
+      "maxMembers": "Max Mitglieder",
+      "maxBranches": "Max Zweigstellen",
+      "maxPublications": "Beiträge/Monat",
+      "maxEvents": "Ereignisse/Monat",
+      "maxProducts": "Max Produkte",
+      "maxServices": "Max Dienste",
+      "featuresList": "Inkludierte Eigenschaften",
+      "addFeature": "Eigenschaft hinzufügen...",
+      "add": "Hinzufügen",
+      "activateImmediately": "Diesen Plan sofort aktivieren"
+    }
+  },
+  "Auth": {
+    "login": {
+      "title": "UGate",
+      "subtitle": "Super Admin",
+      "description": "Sichere Zugangskontrolle",
+      "identifier": "Benutzerkennung",
+      "password": "Passwort",
+      "submit": "Plattform betreten",
+      "loading": "Authentifizierung...",
+      "footer": "© 2026 U-Gate Plattform. Streng reservierter Zugang."
+    },
+    "register": {
+      "title": "Admin-Konto erstellen",
+      "subtitle": "Registrieren Sie Ihr Administratorkonto",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "username": "Benutzername",
+      "email": "E-Mail-Adresse",
+      "phone": "Telefon (optional)",
+      "password": "Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "cancel": "Abbrechen",
+      "submit": "Konto erstellen",
+      "loading": "Erstellung läuft..."
+    }
   }
 }

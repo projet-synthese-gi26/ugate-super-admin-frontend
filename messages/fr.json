@@ -6,7 +6,11 @@
     "payments": "Paiements",
     "settings": "Paramètres",
     "logout": "Déconnexion",
-    "superAdmin": "Super Admin"
+    "superAdmin": "Super Admin",
+    "flaggedContent": "Contenus signalés",
+    "activityLogs": "Logs d'activité",
+    "subscriptionPlans": "Plans d'abonnement",
+    "bailConfig": "Configuration Bail"
   },
   "Dashboard": {
     "title": "Tableau de bord Super Admin",
@@ -15,9 +19,14 @@
     "activeSyndicates": "Syndicats Actifs",
     "activeMembers": "Utilisateurs Globaux",
     "totalRevenue": "Revenus Plateforme",
-    "systemOperational": "Système",
+    "systemOperational": "Système opérationnel",
     "pendingStatus": "En attente",
-    "okStatus": "OK"
+    "okStatus": "OK",
+    "quickActions": "Actions Rapides",
+    "manageSyndicates": "Gérer les Syndicats",
+    "manageSyndicatesDesc": "Approuvez, activez ou suspendez les organisations.",
+    "manageUsers": "Base Utilisateurs",
+    "manageUsersDesc": "Consultez la base de données Auth (TraMaSys)."
   },
   "Syndicats": {
     "title": "Gestion des Syndicats",
@@ -143,5 +152,183 @@
     "successProfile": "Profil mis à jour avec succès.",
     "successPassword": "Mot de passe modifié avec succès.",
     "errorMismatch": "Les mots de passe ne correspondent pas."
+  },
+  "Flagged": {
+    "title": "Contenus Signalés",
+    "subtitle": "Examinez et modérez les publications et événements signalés.",
+    "tabs": {
+      "all": "Tous",
+      "publications": "Publications",
+      "events": "Événements"
+    },
+    "emptyState": "Aucun contenu signalé pour le moment.",
+    "actions": {
+      "approve": "Approuver (Ignorer)",
+      "delete": "Supprimer le contenu"
+    }
+  },
+  "ActivityLogs": {
+    "title": "Logs d'Activité",
+    "subtitle": "Suivre toutes les actions effectuées sur la plateforme",
+    "refresh": "Actualiser",
+    "export": "Exporter",
+    "stats": {
+      "total": "Total Actions",
+      "today": "Aujourd'hui",
+      "activeUsers": "Utilisateurs Actifs",
+      "actionTypes": "Types d'Actions"
+    },
+    "searchPlaceholder": "Rechercher...",
+    "filters": {
+      "allActions": "Toutes les actions",
+      "allEntities": "Toutes les entités"
+    },
+    "periods": {
+      "all": "Toutes les périodes",
+      "today": "Aujourd'hui",
+      "week": "Cette semaine",
+      "month": "Ce mois"
+    },
+    "details": {
+      "title": "Détails du Log",
+      "generalInfo": "Informations Générales",
+      "logId": "ID Log",
+      "dateTime": "Date & Heure",
+      "user": "Utilisateur",
+      "entityType": "Type d'Entité",
+      "entityConcerned": "Entité Concernée",
+      "techInfo": "Informations Techniques",
+      "ipAddress": "Adresse IP",
+      "userAgent": "User Agent",
+      "extraDetails": "Détails Supplémentaires"
+    },
+    "actions": {
+      "view": "Détails"
+    }
+  },
+  "BailConfiguration": {
+    "title": "Configuration des Règles d'Expiration",
+    "subtitle": "Gérer les durées de validité et les règles de désactivation automatique",
+    "newRule": "Nouvelle Règle",
+    "info": {
+      "title": "À propos des règles d'expiration (Bail)",
+      "desc": "Les règles d'expiration permettent de définir automatiquement la durée de validité des abonnements en fonction du type de syndicat. Vous pouvez configurer des alertes avant expiration et activer la désactivation automatique des syndicats expirés."
+    },
+    "stats": {
+      "activeRules": "Règles Actives",
+      "autoDeactivation": "Auto-Désactivation",
+      "avgDuration": "Durée Moyenne"
+    },
+    "table": {
+      "expiryDays": "Durée de validité",
+      "warningDays": "Alerte avant expiration",
+      "autoDeactivate": "Désactivation auto",
+      "created": "Créé",
+      "updated": "MAJ"
+    },
+    "status": {
+      "activated": "Activée",
+      "deactivated": "Désactivée",
+      "auto": "Auto",
+      "manual": "Manuel"
+    },
+    "actions": {
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "saveCreate": "Créer la Règle",
+      "saveEdit": "Enregistrer les Modifications",
+      "cancel": "Annuler"
+    },
+    "modal": {
+      "createTitle": "Créer une Règle",
+      "editTitle": "Modifier la Règle"
+    },
+    "form": {
+      "syndicateType": "Type de Syndicat",
+      "syndicateTypeHint": "Le type de syndicat auquel cette règle s'applique",
+      "expiryDays": "Durée de Validité (jours)",
+      "warningDays": "Alerte Avant Expiration (jours)",
+      "autoDeactivate": "Désactivation Automatique",
+      "autoDeactivateHint": "Le syndicat sera automatiquement désactivé à l'expiration de son abonnement"
+    },
+    "preview": {
+      "title": "Aperçu de la Configuration"
+    }
+  },
+  "SubscriptionPlans": {
+    "title": "Plans d'Abonnement",
+    "subtitle": "Gérer les offres et tarifs de la plateforme",
+    "createPlan": "Créer un Plan",
+    "stats": {
+      "activePlans": "Plans Actifs",
+      "totalPlans": "Total Plans",
+      "subscribers": "Abonnés",
+      "revenue": "Revenus/Mois"
+    },
+    "searchPlaceholder": "Rechercher un plan...",
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "features": "Fonctionnalités",
+    "actions": {
+      "edit": "Modifier",
+      "deactivate": "Désactiver",
+      "activate": "Activer",
+      "delete": "Supprimer",
+      "saveCreate": "Créer le Plan",
+      "saveEdit": "Enregistrer",
+      "cancel": "Annuler"
+    },
+    "modal": {
+      "createTitle": "Créer un Plan",
+      "editTitle": "Modifier le Plan"
+    },
+    "form": {
+      "basicInfo": "Informations de Base",
+      "name": "Nom du Plan",
+      "description": "Description",
+      "pricing": "Tarification",
+      "price": "Prix",
+      "currency": "Devise",
+      "duration": "Durée (jours)",
+      "limits": "Limites & Quotas",
+      "maxMembers": "Membres Max",
+      "maxBranches": "Branches Max",
+      "maxPublications": "Publications/Mois",
+      "maxEvents": "Événements/Mois",
+      "maxProducts": "Produits Max",
+      "maxServices": "Services Max",
+      "featuresList": "Fonctionnalités Incluses",
+      "addFeature": "Ajouter une fonctionnalité...",
+      "add": "Ajouter",
+      "activateImmediately": "Activer ce plan immédiatement"
+    }
+  },
+  "Auth": {
+    "login": {
+      "title": "UGate",
+      "subtitle": "Super Admin",
+      "description": "Contrôle d'accès sécurisé",
+      "identifier": "Identifiant",
+      "password": "Mot de passe",
+      "submit": "Accéder à la plateforme",
+      "loading": "Authentification...",
+      "footer": "© 2026 U-Gate Platform. Accès strictement réservé."
+    },
+    "register": {
+      "title": "Créer un compte Admin",
+      "subtitle": "Enregistrez votre compte administrateur",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "username": "Nom d'utilisateur",
+      "email": "Email",
+      "phone": "Téléphone (optionnel)",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "cancel": "Annuler",
+      "submit": "Créer le compte",
+      "loading": "Création en cours..."
+    }
   }
 }
